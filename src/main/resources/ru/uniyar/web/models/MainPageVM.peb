@@ -1,0 +1,9 @@
+{% extends "./Layout.peb" %}
+
+{% block headTitle %} Главная {% endblock %}
+
+{% block title %} Главная {% endblock %}
+
+{% block body %}
+    Главная
+{% endblock %}
