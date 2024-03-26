@@ -1,5 +1,28 @@
 package ru.uniyar.db
 
-fun a(): String {
-    return "a"
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.sql.SQLException
+
+class DBOperations {
+    companion object {
+        fun fetchAllUsers(): List<User> {
+            try {
+                return transaction {
+                    Users.selectAll().map { row ->
+                        User(
+                            row[Users.userID],
+                            row[Users.username],
+                            row[Users.password],
+                            row[Users.userRole],
+                        )
+                    }
+                }
+            } catch (e: ClassNotFoundException) {
+                throw e
+            } catch (e: SQLException) {
+                throw e
+            }
+        }
+    }
 }
