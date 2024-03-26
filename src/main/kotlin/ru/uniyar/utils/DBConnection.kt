@@ -12,17 +12,13 @@ class DBConnection {
                 ignoreIfMissing = true
             }
 
-        private val url = String.format("jdbc:mysql://%s/dndgames", dotenv.get("HOST"))
-        private val user: String = dotenv.get("USER")
-        private val password: String = dotenv.get("PASSWORD")
+        private val url = "mysql://${dotenv.get("HOST")}:3306/dndgames"
+        private val user = dotenv.get("USER")
+        private val password = dotenv.get("PASSWORD")
+        private val driver = "com.mysql.cj.jdbc.Driver"
 
         fun connect() {
-            Database.connect(
-                url,
-                driver = "org.mariadb.jdbc.Driver",
-                user,
-                password,
-            )
+            Database.connect(url, driver, user, password)
         }
     }
 }

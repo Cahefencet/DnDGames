@@ -9,7 +9,7 @@ import java.util.HexFormat
 class Hasher {
     companion object {
         private val commaFormat = HexFormat.of()
-        private var messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
+        private var messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256") // caching-SHA-2
         private val saltLens = EnvironmentKey.nonEmptyString().required("auth.salt")
 
         fun hashPassword(password: String): String {

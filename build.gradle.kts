@@ -3,8 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.9.10"
     id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
+    kotlin("jvm") version "1.9.10"
 }
 
 val http4kVersion: String by project
@@ -17,7 +18,7 @@ val javajwtVersion: String by project
 val exposedVersion: String by project
 val ktlintVersion: String by project
 val dotenvVersion: String by project
-val jdbcVersion: String by project
+val mysqlConnVersion: String by project
 
 ktlint {
     version = ktlintVersion
@@ -78,7 +79,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
-    implementation("org.mariadb.jdbc:mariadb-java-client:$jdbcVersion")
+    implementation("mysql:mysql-connector-java:$mysqlConnVersion")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.1")
     testImplementation("org.http4k:http4k-testing-approval:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-hamkrest:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-kotest:$http4kVersion")
