@@ -4,13 +4,15 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.template.TemplateRenderer
+import org.http4k.core.with
+import ru.uniyar.utils.htmlView
+import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.MainPageVM
 
-class RootHandler(val renderer: TemplateRenderer) : HttpHandler {
-    val model = MainPageVM()
-
+class RootHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        return Response(Status.OK).body(renderer(model))
+        val userStruct = userLens(request)
+        val model = MainPageVM()
+        return Response(Status.OK).with(htmlView(request) of model)
     }
 }
