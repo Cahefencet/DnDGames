@@ -1,0 +1,7 @@
+# DnDGames
+
+## Package
+```
+./gradlew distZip
+```
+
