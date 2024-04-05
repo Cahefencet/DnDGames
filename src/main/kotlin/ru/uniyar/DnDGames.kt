@@ -22,6 +22,7 @@ fun router() =
 
 fun main() {
     DBConnection.connect()
+
     val users = DBOperations.fetchAllUsers()
     users.forEach {
         println(it.userName)
