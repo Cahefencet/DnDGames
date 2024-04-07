@@ -17,10 +17,9 @@ import org.http4k.routing.RoutingHttpHandler
 import ru.uniyar.auth.JwtTools
 import ru.uniyar.auth.Role
 import ru.uniyar.auth.Users
-import ru.uniyar.router
+import ru.uniyar.web.router
 import ru.uniyar.web.templates.ContextAwarePebbleTemplates
 import ru.uniyar.web.templates.ContextAwareViewRender
-import java.util.UUID
 
 data class UserStruct(val id: Int, val name: String, val role: Role)
 

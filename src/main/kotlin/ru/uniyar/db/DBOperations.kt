@@ -2,8 +2,6 @@ package ru.uniyar.db
 
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.uniyar.auth.Role
-import ru.uniyar.utils.stringToUserRole
 import java.sql.SQLException
 
 class DBOperations {
