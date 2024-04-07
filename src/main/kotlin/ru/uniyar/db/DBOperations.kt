@@ -6,6 +6,23 @@ import java.sql.SQLException
 
 class DBOperations {
     companion object {
+        //        fun a() {
+//            try {
+//                return transaction {
+//                    Users.insert {
+//                        it[userID] = 1
+//                        it[username] = "a"
+//                        it[password] = "a"
+//                        it[userRole] = Role.ADMIN
+//                    }
+//                }
+//            } catch (e: ClassNotFoundException) {
+//                throw e
+//            } catch (e: SQLException) {
+//                throw e
+//            }
+//        }
+
         fun fetchAllUsers(): List<User> {
             try {
                 return transaction {

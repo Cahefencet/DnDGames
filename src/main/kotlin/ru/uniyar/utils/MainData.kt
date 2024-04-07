@@ -17,12 +17,11 @@ import org.http4k.routing.RoutingHttpHandler
 import ru.uniyar.auth.JwtTools
 import ru.uniyar.auth.Role
 import ru.uniyar.auth.Users
-import ru.uniyar.router
+import ru.uniyar.web.router
 import ru.uniyar.web.templates.ContextAwarePebbleTemplates
 import ru.uniyar.web.templates.ContextAwareViewRender
-import java.util.UUID
 
-data class UserStruct(val id: UUID, val name: String, val role: Role)
+data class UserStruct(val id: Int, val name: String, val role: Role)
 
 val contexts = RequestContexts()
 val userLens: RequestContextLens<UserStruct?> = RequestContextKey.optional(contexts, "user-struct")
@@ -50,7 +49,7 @@ fun getApp(users: Users): RoutingHttpHandler {
                 val cookie = request.cookie("auth")
                 val token = cookie?.value ?: return@exec next(request)
                 val id = jwtTools.verifyToken(token) ?: return@exec next(request)
-                val userStruct = users.getUserStructById(id) ?: return@exec next(request)
+                val userStruct = users.getUserStructById(id.toInt()) ?: return@exec next(request)
                 next(request.with(key of userStruct))
             }
         }
