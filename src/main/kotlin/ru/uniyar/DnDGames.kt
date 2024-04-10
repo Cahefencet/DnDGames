@@ -13,7 +13,10 @@ fun main() {
 
     val users = DBOperations.fetchAllUsers()
     users.forEach {
-        println(it.userName)
+        println(
+            it.userID.toString() + " | " + it.userName + " | " +
+            it.password + " | " + it.role.toString()
+        )
     }
 
     val server =
@@ -25,5 +28,6 @@ fun main() {
                         .webPort,
                 ),
             ).start()
+
     println("Server started on http://localhost:${server.port()}")
 }

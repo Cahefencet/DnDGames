@@ -9,9 +9,9 @@ import ru.uniyar.utils.htmlView
 import ru.uniyar.web.models.MainPageVM
 
 class RootHandler : HttpHandler {
+    val model = MainPageVM()
     override fun invoke(request: Request): Response {
         // val userStruct = userLens(request)
-        val model = MainPageVM()
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

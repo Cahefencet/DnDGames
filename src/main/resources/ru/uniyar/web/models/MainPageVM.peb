@@ -2,8 +2,13 @@
 
 {% block headTitle %} Главная {% endblock %}
 
-{% block title %} Главная {% endblock %}
-
 {% block body %}
-    Главная
+    <div class="container">
+        <h2 class="text-center mt-5">
+            Данный сайт создан для учёта событий днд-кампаний.
+        </h2>
+        <h3 class="text-center mt-5">
+            Приятных Вам игр!
+        </h3>
+    </div>
 {% endblock %}

@@ -1,0 +1,23 @@
+    {% extends "./Layout.peb" %}
+
+    {% block headTitle %}Список кампаний{% endblock %}
+
+    {% block title %}
+        Список кампаний
+    {% endblock %}
+
+    {% block body %}
+        <div class="container">
+            {% for campaign in model.campaigns %}
+                <div class="container">
+                    <h5>
+                        <a href="/Campaigns/{{ campaign.campaignID }}">
+                            <p>{{ campaign.campaignName }}</p>
+                        </a>
+                    </h5>
+                    <p>Владелец: {{ campaign.ownerID }}</p>
+                    <p>Кампания: {{ campaign.campaignID }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
