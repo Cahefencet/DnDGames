@@ -1,8 +1,7 @@
 package ru.uniyar.auth
 
+import ru.uniyar.db.User
 import ru.uniyar.utils.UserStruct
-
-data class User(val name: String, val password: String, val id: Int, val role: Role)
 
 class Users(userList: List<User>) {
     private val users = mutableListOf<User>()
@@ -14,13 +13,13 @@ class Users(userList: List<User>) {
     }
 
     private fun fetchUserById(id: Int): User? {
-        return users.find { it.id == id }
+        return users.find { it.userID == id }
     }
 
     fun getUserStructById(id: Int): UserStruct? {
         val user = fetchUserById(id)
         if (user != null) {
-            return UserStruct(user.id, user.name, user.role)
+            return UserStruct(user.userID, user.userName, user.role)
         }
         return null
     }

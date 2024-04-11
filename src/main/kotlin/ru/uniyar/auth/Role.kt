@@ -2,7 +2,7 @@ package ru.uniyar.auth
 
 enum class Role(
     val manageUsers: Boolean = false,
-    // admin
+    // admin OR MASTER
     val seeCampaigns: Boolean = true,
     // all but anon
     val manageOwnCharacters: Boolean = false,

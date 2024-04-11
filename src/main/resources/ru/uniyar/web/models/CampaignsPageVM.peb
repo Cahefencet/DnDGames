@@ -15,8 +15,8 @@
                             <p>{{ campaign.campaignName }}</p>
                         </a>
                     </h5>
-                    <p>Владелец: {{ campaign.ownerID }}</p>
-                    <p>Кампания: {{ campaign.campaignID }}</p>
+                    <p>Айди мастера: {{ campaign.ownerID }}</p>
+                    <p>Айди кампании: {{ campaign.campaignID }}</p>
                 </div>
             {% endfor %}
         </div>

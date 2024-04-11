@@ -1,0 +1,23 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}Список пользователей{% endblock %}
+
+        {% block title %}
+        Список пользователей
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+            {% for user in model.users %}
+            <div class="container">
+                <h5>
+                    <a href="/Campaigns/{{ user.userID }}">
+                        <p>{{ user.userName }}</p>
+                    </a>
+                </h5>
+                <p>Айди: {{ user.userID }}</p>
+                <p>Роль: {{ user.role }}</p>
+            </div>
+            {% endfor %}
+    </div>
+    {% endblock %}
