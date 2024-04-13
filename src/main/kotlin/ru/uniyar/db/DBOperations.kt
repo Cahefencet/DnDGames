@@ -24,6 +24,22 @@ fun insertUser(user: User) {
     }
 }
 
+fun insertCampaign(campaign: Campaign) {
+    try {
+        return transaction {
+            Campaigns.insert {
+                it[campaignName] = campaign.campaignName
+                it[campaignID] = campaign.campaignID
+                it[ownerId] = campaign.ownerID
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun deleteUserById(id: Int){
     try {
         return transaction {
@@ -38,7 +54,6 @@ fun deleteUserById(id: Int){
     }
 }
 
-//!
 fun findUserByID(id: Int) : User? {
     try {
         return transaction {
@@ -61,6 +76,25 @@ fun findUserByID(id: Int) : User? {
     }
 }
 
+fun findCampaignByID(id : Int) : Campaign? {
+    try {
+        return transaction {
+            Campaigns.select{
+                (Campaigns.campaignID eq id)
+            }.firstOrNull()?.let {
+                Campaign(
+                    campaignID = it[Campaigns.campaignID],
+                    campaignName = it[Campaigns.campaignName],
+                    ownerID = it[Campaigns.ownerId],
+                )
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
 
 fun fetchAllUsers(): List<User> {
     try {

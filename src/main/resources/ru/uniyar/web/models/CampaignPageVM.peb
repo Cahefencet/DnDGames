@@ -1,0 +1,19 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}{{ model.campaign.campaignName }}{% endblock %}
+
+        {% block title %}
+        {{ model.campaign.campaignName }}
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+          <div class="container">
+              <h5>
+                {{ model.campaign.campaignName }}<br>
+                Айди мастера: {{ model.campaign.ownerID }}<br>
+                Айди кампании: {{ model.campaign.campaignID }}<br>
+              </h5>
+          </div>
+    </div>
+    {% endblock %}

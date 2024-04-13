@@ -5,14 +5,14 @@ import org.http4k.routing.ResourceLoader
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.routing.static
-import ru.uniyar.web.handlers.CampaignsHandler
-import ru.uniyar.web.handlers.RootHandler
-import ru.uniyar.web.handlers.UsersHandler
+import ru.uniyar.web.handlers.*
 
 fun router() =
     routes(
         "/" bind GET to RootHandler(),
         "/Campaigns" bind GET to CampaignsHandler(),
+        "/Campaigns/{campaignID}" bind GET to CampaignHandler(),
         "/Users" bind GET to UsersHandler(),
+        "/Users/{userID}" bind GET to UserHandler(),
         static(ResourceLoader.Classpath("ru/uniyar/public")),
     )
