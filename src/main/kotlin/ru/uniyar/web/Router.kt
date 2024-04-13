@@ -14,5 +14,7 @@ fun router() =
         "/Campaigns/{campaignID}" bind GET to CampaignHandler(),
         "/Users" bind GET to UsersHandler(),
         "/Users/{userID}" bind GET to UserHandler(),
+        "/Characters" bind GET to CharactersHandler(),
+        "/Characters/{characterID}" bind GET to CharacterHandler(),
         static(ResourceLoader.Classpath("ru/uniyar/public")),
     )

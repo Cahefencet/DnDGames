@@ -1,12 +1,29 @@
 package ru.uniyar.db
 
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
+
+fun insertCharacter(character: Character) {
+    try {
+        return transaction {
+            exec("SET FOREIGN_KEY_CHECKS=0")
+            Characters.insert {
+                it[userID] = character.userID
+                it[name] = character.name
+                it[characterClass] = character.characterClass
+                it[race] = character.characterClass
+                it[level] = character.level
+            }
+            exec("SET FOREIGN_KEY_CHECKS=1")
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
 
 fun insertUser(user: User) {
     try {
@@ -24,13 +41,64 @@ fun insertUser(user: User) {
     }
 }
 
-fun insertCampaign(campaign: Campaign) {
+fun campaignCreation(campID: Int, usrID : Int) {
+    try {
+        return transaction {
+            exec("SET FOREIGN_KEY_CHECKS=0")
+            CampaignUsers.insert {
+                it[campaignID] = campID
+                it[userID] = usrID
+                it[playerRole] = PlayerRole.MASTER
+            }
+            exec("SET FOREIGN_KEY_CHECKS=1")
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun insertCampaign(campaign: Campaign, creator: User) {
     try {
         return transaction {
             Campaigns.insert {
                 it[campaignName] = campaign.campaignName
-                it[campaignID] = campaign.campaignID
                 it[ownerId] = campaign.ownerID
+            }
+            val id = findCampByOwnerAndName(campaign.ownerID, campaign.campaignName)!!
+            // !! используется, т.к. кампанию мы только что создали, значит, она точно есть
+            campaignCreation(id, creator.userID)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findCampByOwnerAndName(ownerID: Int, name: String) : Int? {
+    try {
+        return transaction {
+            Campaigns
+                .selectAll()
+                .where {
+                    (Campaigns.ownerId eq ownerID)
+                        .and(Campaigns.campaignName eq name)
+                }.firstOrNull()?.get(Campaigns.campaignID)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun deleteCampaignByID(id: Int) {
+    try {
+        return transaction {
+            Campaigns.deleteWhere {
+                Campaigns.campaignID eq id
             }
         }
     } catch (e: ClassNotFoundException) {
@@ -40,12 +108,62 @@ fun insertCampaign(campaign: Campaign) {
     }
 }
 
-fun deleteUserById(id: Int){
+fun deleteUserById(id: Int) {
     try {
         return transaction {
             Users.deleteWhere {
                 Users.userID eq id
             }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findCharactersByUser(id: Int): List<Character> {
+    try {
+        return transaction {
+            Characters
+                .selectAll()
+                .where {
+                    Characters.userID eq id
+                }
+                .map {
+                    Character(
+                        it[Characters.characterID],
+                        it[Characters.userID],
+                        it[Characters.name],
+                        it[Characters.characterClass],
+                        it[Characters.race],
+                        it[Characters.level]
+                    )
+                }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findCharacterByID(id: Int) : Character? {
+    try {
+        return transaction {
+            Characters.select {
+                (Characters.characterID eq id)
+            }
+                .firstOrNull()?.let {
+                    Character(
+                        characterID = it[Characters.characterID],
+                        userID = it[Characters.userID],
+                        name = it[Characters.name],
+                        characterClass = it[Characters.characterClass],
+                        race = it[Characters.race],
+                        level = it[Characters.level],
+                    )
+                }
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -88,6 +206,30 @@ fun findCampaignByID(id : Int) : Campaign? {
                     ownerID = it[Campaigns.ownerId],
                 )
             }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun fetchAllCharacters(): List<Character> {
+    try {
+        return transaction {
+            Characters
+                .selectAll()
+                .map {
+                    row ->
+                    Character(
+                        row[Characters.characterID],
+                        row[Characters.userID],
+                        row[Characters.name],
+                        row[Characters.characterClass],
+                        row[Characters.race],
+                        row[Characters.level],
+                    )
+                }
         }
     } catch (e: ClassNotFoundException) {
         throw e

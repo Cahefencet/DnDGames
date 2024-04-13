@@ -1,0 +1,26 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}Персонажи{% endblock %}
+
+        {% block title %}
+        Персонажи
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+            {% for character in model.characters %}
+            <div class="container">
+                <h5>
+                    <a href="/Characters/{{ character.characterID }}">
+                        <p>{{ character.name }}</p>
+                    </a>
+                </h5>
+                <p>Айди: {{ character.characterID }}</p>
+                <p>Владелец: <a href="/Users/{{ model.character.userID }}">тык</a></p>
+                <p>Класс: {{ character.characterClass }}</p>
+                <p>Раса: {{ character.race }}</p>
+                <p>Уровень: {{ character.level }}</p>
+            </div>
+            {% endfor %}
+    </div>
+    {% endblock %}

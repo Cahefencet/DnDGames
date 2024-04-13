@@ -14,3 +14,4 @@ fun <IN : Any, OUT> lensOrNull(
 
 val campaignIdLens = Path.nonBlankString().of("campaignID")
 val userIdLens = Path.nonBlankString().of("userID")
+val characterIdLens = Path.nonBlankString().of("characterID")

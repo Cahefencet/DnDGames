@@ -13,14 +13,13 @@ class CampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
 
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
-            ?: return Response(Status.FOUND).header("Location","/")
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val campaign = findCampaignByID(campaignID)
-            ?: return Response(Status.FOUND).header("Location","/")
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val model = CampaignPageVM(campaign)
 
         return Response(Status.OK).with(htmlView(request) of model)
-
     }
 }

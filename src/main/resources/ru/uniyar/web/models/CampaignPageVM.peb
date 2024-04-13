@@ -11,7 +11,7 @@
           <div class="container">
               <h5>
                 {{ model.campaign.campaignName }}<br>
-                Айди мастера: {{ model.campaign.ownerID }}<br>
+                Мастер: <a href="/Users/{{ model.campaign.ownerID }}">тык</a><br>
                 Айди кампании: {{ model.campaign.campaignID }}<br>
               </h5>
           </div>

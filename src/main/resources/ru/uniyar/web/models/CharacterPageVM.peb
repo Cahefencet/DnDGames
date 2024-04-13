@@ -1,0 +1,21 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}{{ model.character.name }}{% endblock %}
+
+        {% block title %}
+        {{ model.character.name }}
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container">
+            <h5>
+                {{ model.character.name }}<br>
+                Владелец: <a href="/Users/{{ model.character.userID }}">тык</a><br>
+                Класс: {{ model.character.characterClass }}  <br>
+                Раса: {{ model.character.race }}  <br>
+                Уровень: {{ model.character.level }} <br>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}
