@@ -5,6 +5,7 @@ import org.http4k.core.Status
 import org.http4k.core.Response
 import org.http4k.core.with
 import org.http4k.core.Request
+import ru.uniyar.db.fetchAllPostsOfOneCampaign
 import ru.uniyar.db.findCampaignByID
 import ru.uniyar.utils.htmlView
 import ru.uniyar.web.models.CampaignPageVM
@@ -18,7 +19,9 @@ class CampaignHandler : HttpHandler {
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val model = CampaignPageVM(campaign)
+        val posts = fetchAllPostsOfOneCampaign(campaignID)
+
+        val model = CampaignPageVM(campaign, posts)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }

@@ -25,14 +25,36 @@ fun insertCharacter(character: Character) {
     }
 }
 
+fun insertPost(campaignPost: CampaignPost){
+    try {
+        return transaction {
+            exec("SET FOREIGN_KEY_CHECKS=0")
+            CampaignPosts.insert {
+                it[campaignID] = campaignPost.campaignID
+                it[authorID] = campaignPost.authorID
+                it[text] = campaignPost.text
+                it[visibility] = campaignPost.visibility
+                it[gameDate] = campaignPost.gameDate
+                it[postDate] = campaignPost.postDate
+            }
+            exec("SET FOREIGN_KEY_CHECKS=1")
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun insertUser(user: User) {
     try {
         return transaction {
-            Users.insert {
-                it[username] = user.userName
-                it[password] = user.password
-                it[userRole] = user.role
-            }
+            if (findUserByName(user.userName) == null)
+                Users.insert {
+                    it[username] = user.userName
+                    it[password] = user.password
+                    it[userRole] = user.role
+                }
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -66,26 +88,9 @@ fun insertCampaign(campaign: Campaign, creator: User) {
                 it[campaignName] = campaign.campaignName
                 it[ownerId] = campaign.ownerID
             }
-            val id = findCampByOwnerAndName(campaign.ownerID, campaign.campaignName)!!
+            val curID = findCampByOwnerAndName(campaign.ownerID, campaign.campaignName)!!
             // !! используется, т.к. кампанию мы только что создали, значит, она точно есть
-            campaignCreation(id, creator.userID)
-        }
-    } catch (e: ClassNotFoundException) {
-        throw e
-    } catch (e: SQLException) {
-        throw e
-    }
-}
-
-fun findCampByOwnerAndName(ownerID: Int, name: String) : Int? {
-    try {
-        return transaction {
-            Campaigns
-                .selectAll()
-                .where {
-                    (Campaigns.ownerId eq ownerID)
-                        .and(Campaigns.campaignName eq name)
-                }.firstOrNull()?.get(Campaigns.campaignID)
+            campaignCreation(curID, creator.userID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -114,6 +119,23 @@ fun deleteUserById(id: Int) {
             Users.deleteWhere {
                 Users.userID eq id
             }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findCampByOwnerAndName(ownerID: Int, name: String) : Int? {
+    try {
+        return transaction {
+            Campaigns
+                .selectAll()
+                .where {
+                    (Campaigns.ownerId eq ownerID)
+                        .and(Campaigns.campaignName eq name)
+                }.firstOrNull()?.get(Campaigns.campaignID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -151,9 +173,11 @@ fun findCharactersByUser(id: Int): List<Character> {
 fun findCharacterByID(id: Int) : Character? {
     try {
         return transaction {
-            Characters.select {
-                (Characters.characterID eq id)
-            }
+            Characters
+                .selectAll()
+                .where {
+                    Characters.characterID eq id
+                }
                 .firstOrNull()?.let {
                     Character(
                         characterID = it[Characters.characterID],
@@ -175,9 +199,33 @@ fun findCharacterByID(id: Int) : Character? {
 fun findUserByID(id: Int) : User? {
     try {
         return transaction {
-            Users.select {
-                (Users.userID eq id)
-            }
+            Users.selectAll()
+                .where {
+                    Users.userID eq id
+                }
+                .firstOrNull()?.let {
+                    User(
+                        userID = it[Users.userID],
+                        userName = it[Users.username],
+                        password = it[Users.password],
+                        role = it[Users.userRole],
+                    )
+                }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findUserByName(name: String) : User? {
+    try {
+        return transaction {
+            Users.selectAll()
+                .where {
+                Users.username eq name
+                }
                 .firstOrNull()?.let {
                     User(
                         userID = it[Users.userID],
@@ -197,15 +245,45 @@ fun findUserByID(id: Int) : User? {
 fun findCampaignByID(id : Int) : Campaign? {
     try {
         return transaction {
-            Campaigns.select{
-                (Campaigns.campaignID eq id)
-            }.firstOrNull()?.let {
+            Campaigns.selectAll()
+                .where {
+                    Campaigns.campaignID eq id
+                }
+                .firstOrNull()?.let {
                 Campaign(
                     campaignID = it[Campaigns.campaignID],
                     campaignName = it[Campaigns.campaignName],
                     ownerID = it[Campaigns.ownerId],
                 )
             }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun fetchAllPostsOfOneCampaign(campaignID: Int): List<CampaignPost> {
+    try {
+        return transaction {
+            CampaignPosts
+                .selectAll()
+                .where {
+                    CampaignPosts.campaignID eq campaignID
+                }
+                .map {
+                    row ->
+                    CampaignPost(
+                        row[CampaignPosts.postId],
+                        row[CampaignPosts.campaignID],
+                        row[CampaignPosts.authorID],
+                        row[CampaignPosts.text],
+                        row[CampaignPosts.visibility],
+                        row[CampaignPosts.gameDate],
+                        row[CampaignPosts.postDate],
+                    )
+                }
         }
     } catch (e: ClassNotFoundException) {
         throw e

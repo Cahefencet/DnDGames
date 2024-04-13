@@ -39,6 +39,19 @@ fun main() {
             + character.race + " | owner: " + character.userID
         )
 
+    val post = fetchAllPostsOfOneCampaign(83)
+    val str = StringBuilder()
+    post.forEach {
+        str.append("post: " + it.postId + " | Campaign: " + it.campaignID
+                + " | author: " + it.authorID + " | text: " + it.text
+                + " | visibility: " + it.visibility.toString() + " | game date: "
+                + it.gameDate.toString() + " | post date: " + it.postDate.toString()
+        )
+    }
+    println(str)
+
+
+
     val server =
         getApp(Users(fetchAllUsers()))
             .asServer(

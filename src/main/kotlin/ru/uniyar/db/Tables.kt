@@ -3,7 +3,10 @@ package ru.uniyar.db
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import ru.uniyar.auth.Role
+import java.sql.SQLException
 
 object Users : Table() {
     val userID = integer("user_id")
@@ -46,8 +49,8 @@ object CampaignPosts  : Table() {
 
 enum class Visibility{
     MASTER,
-    PLAYER,
-    ALL,
+    SINGLE_PLAYER,
+    EVERYBODY,
 }
 
 enum class PlayerRole{

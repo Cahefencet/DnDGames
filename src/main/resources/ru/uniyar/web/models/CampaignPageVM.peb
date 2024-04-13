@@ -15,5 +15,17 @@
                 Айди кампании: {{ model.campaign.campaignID }}<br>
               </h5>
           </div>
+        <div class="container">
+            <br>
+            <br>
+            {% for post in model.posts %}
+                <div class="container">
+                    <p>Дата публикации: {{ post.postDate | date("dd.MM.yyyy HH:mm:ss") }}</p>
+                    <p>Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}</p>
+                    <p> {{ post.text }}</p>
+                    <p>Автор: <a href="/Users/{{ post.authorID }}">тык</a></p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
     {% endblock %}
