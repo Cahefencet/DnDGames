@@ -10,12 +10,20 @@
     <div class="container">
           <div class="container">
               <h5>
-                {{ model.campaign.campaignName }}<br>
                 Мастер: <a href="/Users/{{ model.campaign.ownerID }}">тык</a><br>
                 Айди кампании: {{ model.campaign.campaignID }}<br>
               </h5>
           </div>
         <div class="container">
+            <br>
+            <br>
+            <div class="container">
+                <h4>
+                    <a class="page-link" href="/Post/{{ model.campaign.campaignID }}">
+                        <button class="button-style">Добавить запись</button>
+                    </a>
+                </h4>
+            </div>
             <br>
             <br>
             {% for post in model.posts %}

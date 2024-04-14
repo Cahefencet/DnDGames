@@ -1,0 +1,25 @@
+{% extends "./Layout.peb" %}
+
+{% block headTitle %} Новый персонаж {% endblock %}
+
+{% block title %} Новый персонаж {% endblock %}
+
+{% block body %}
+<form class="text-center mt-5" method="POST">
+
+    Имя: <br>
+    <input type="text" name="name" placeholder="Имя" required> <br> <br>
+
+    Класс / классы: <br>
+    <input type="text" name="characterClass" placeholder="Класс / классы" required> <br> <br>
+
+    Раса:<br>
+    <input type="text" name="race" placeholder="Раса" required> <br> <br>
+
+    Уровень: <br>
+    <input type="number" min="1" max="20" name="level" placeholder="Уровень" required> <br> <br>
+
+    <button type="submit">Принять</button>
+</form>
+{% endblock %}
+

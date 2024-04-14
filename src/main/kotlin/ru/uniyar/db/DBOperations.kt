@@ -63,6 +63,24 @@ fun insertUser(user: User) {
     }
 }
 
+fun insertCampaign(campaign: Campaign, creator: User) {
+    try {
+        return transaction {
+            Campaigns.insert {
+                it[campaignName] = campaign.campaignName
+                it[ownerId] = campaign.ownerID
+            }
+            val curID = findCampIDByOwnerAndName(campaign.ownerID, campaign.campaignName)!!
+            // !! используется, т.к. кампанию мы только что создали, значит, она точно есть
+            campaignCreation(curID, creator.userID)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun campaignCreation(campID: Int, usrID : Int) {
     try {
         return transaction {
@@ -73,24 +91,6 @@ fun campaignCreation(campID: Int, usrID : Int) {
                 it[playerRole] = PlayerRole.MASTER
             }
             exec("SET FOREIGN_KEY_CHECKS=1")
-        }
-    } catch (e: ClassNotFoundException) {
-        throw e
-    } catch (e: SQLException) {
-        throw e
-    }
-}
-
-fun insertCampaign(campaign: Campaign, creator: User) {
-    try {
-        return transaction {
-            Campaigns.insert {
-                it[campaignName] = campaign.campaignName
-                it[ownerId] = campaign.ownerID
-            }
-            val curID = findCampByOwnerAndName(campaign.ownerID, campaign.campaignName)!!
-            // !! используется, т.к. кампанию мы только что создали, значит, она точно есть
-            campaignCreation(curID, creator.userID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -127,7 +127,7 @@ fun deleteUserById(id: Int) {
     }
 }
 
-fun findCampByOwnerAndName(ownerID: Int, name: String) : Int? {
+fun findCampIDByOwnerAndName(ownerID: Int, name: String) : Int? {
     try {
         return transaction {
             Campaigns
@@ -136,6 +136,26 @@ fun findCampByOwnerAndName(ownerID: Int, name: String) : Int? {
                     (Campaigns.ownerId eq ownerID)
                         .and(Campaigns.campaignName eq name)
                 }.firstOrNull()?.get(Campaigns.campaignID)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findCharacterIDByNameUserClassRaceLevel(character: Character) : Int? {
+    try {
+        return transaction {
+            Characters
+                .selectAll()
+                .where {
+                    (Characters.userID eq character.userID)
+                        .and(Characters.name eq character.name)
+                        .and(Characters.characterClass eq character.characterClass)
+                        .and(Characters.level eq character.level)
+                        .and(Characters.race eq character.race)
+                }.firstOrNull()?.get(Characters.characterID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
