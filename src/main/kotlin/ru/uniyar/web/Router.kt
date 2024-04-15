@@ -20,6 +20,6 @@ fun router() =
         "/NewCharacter" bind GET to NewCharacterHandler(),
         "/NewCharacter" bind POST to CharacterCreationHandler(),
         "/Post/{campaignID}" bind GET to NewPostHandler(),
-//        "/Post/{campaignID}" bind POST to PostCreationHandler(),
+        "/Post/{campaignID}" bind POST to PostCreationHandler(),
         static(ResourceLoader.Classpath("ru/uniyar/public")),
     )

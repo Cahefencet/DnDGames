@@ -32,6 +32,7 @@
                     <p>Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}</p>
                     <p> {{ post.text }}</p>
                     <p>Автор: <a href="/Users/{{ post.authorID }}">тык</a></p>
+                    <p>---------------------</p>
                 </div>
             {% endfor %}
         </div>
