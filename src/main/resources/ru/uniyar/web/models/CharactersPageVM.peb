@@ -11,7 +11,7 @@
         <div class="container">
             <h4>
                 <a class="page-link" href="/NewCharacter">
-                    <button class="button-style">Добавить персонажа</button>
+                    <button class="btn btn-primary">Добавить персонажа</button>
                 </a>
             </h4>
         </div>

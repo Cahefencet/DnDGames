@@ -1,0 +1,15 @@
+{% extends "./Layout.peb" %}
+
+{% block headTitle %} Новая кампания{% endblock %}
+
+{% block title %} Введите название кампании {% endblock %}
+
+{% block body %}
+    <form class="text-center mt-5" method="POST">
+
+        <input type="text" name="name" maxlength="100" placeholder="Название" required> <br> <br>
+
+        <button type="submit" class="btn btn-primary">Принять</button>
+    </form>
+{% endblock %}
+

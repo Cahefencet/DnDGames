@@ -8,6 +8,13 @@
 
     {% block body %}
         <div class="container">
+            <div class="container">
+                <h4>
+                    <a class="page-link" href="/NewCampaign">
+                        <button class="btn btn-primary">Создать новую кампанию</button>
+                    </a>
+                </h4>
+            </div>
             {% for campaign in model.campaigns %}
                 <div class="container">
                     <h5>

@@ -63,7 +63,7 @@ fun insertUser(user: User) {
     }
 }
 
-fun insertCampaign(campaign: Campaign, creator: User) {
+fun insertCampaign(campaign: Campaign) {
     try {
         return transaction {
             Campaigns.insert {
@@ -72,7 +72,7 @@ fun insertCampaign(campaign: Campaign, creator: User) {
             }
             val curID = findCampIDByOwnerAndName(campaign.ownerID, campaign.campaignName)!!
             // !! используется, т.к. кампанию мы только что создали, значит, она точно есть
-            campaignCreation(curID, creator.userID)
+            campaignCreation(curID, campaign.ownerID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -81,7 +81,7 @@ fun insertCampaign(campaign: Campaign, creator: User) {
     }
 }
 
-fun campaignCreation(campID: Int, usrID : Int) {
+private fun campaignCreation(campID: Int, usrID : Int) {
     try {
         return transaction {
             exec("SET FOREIGN_KEY_CHECKS=0")
@@ -144,6 +144,8 @@ fun findCampIDByOwnerAndName(ownerID: Int, name: String) : Int? {
     }
 }
 
+
+// лучше сделать, чтобы искал все совпадения (понадобится для исключения возможности создать 39825769834 одинаковых персонажей)
 fun findCharacterIDByNameUserClassRaceLevel(character: Character) : Int? {
     try {
         return transaction {
