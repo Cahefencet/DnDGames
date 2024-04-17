@@ -2,11 +2,9 @@ package ru.uniyar.web.handlers
 
 import org.http4k.core.*
 import org.http4k.core.body.form
-import ru.uniyar.db.CampaignPost
-import ru.uniyar.db.Visibility
-import ru.uniyar.db.findCampaignByID
-import ru.uniyar.db.insertPost
+import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
+import ru.uniyar.web.models.DeletePostConfirmationVM
 import ru.uniyar.web.models.NewPostVM
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -80,5 +78,48 @@ class PostCreationHandler : HttpHandler {
         } catch (e: IllegalArgumentException) {
             return notValid
         }
+    }
+}
+
+class DeletePostConfirmationHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+
+        val postID = lensOrNull(postIdLens, request)?.toIntOrNull()
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        val post = findPostByID(postID)
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        val author = findUserByID(post.authorID)
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        val model = DeletePostConfirmationVM(post, author)
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class DeletePostHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val requestPostID = lensOrNull(postIdLens, request)?.toIntOrNull() ?: -1
+
+        val form = request.form()
+
+        val formPostID = form.findSingle("postID")?.toIntOrNull() ?: -2
+
+        if (requestPostID != formPostID)
+            return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val post = findPostByID(formPostID)
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        // coming soon
+        val userID = 3
+
+        val campaignID = findCampIDByPostID(formPostID) ?: -1
+
+        if (post.authorID == userID)
+            deletePostByID(formPostID)
+
+        return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}")
     }
 }

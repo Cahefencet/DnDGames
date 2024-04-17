@@ -10,7 +10,7 @@
         <div class="container">
             <div class="container">
                 <h4>
-                    <a class="page-link" href="/NewCampaign">
+                    <a class="page-link" href="/Campaigns-new">
                         <button class="btn btn-primary">Создать новую кампанию</button>
                     </a>
                 </h4>

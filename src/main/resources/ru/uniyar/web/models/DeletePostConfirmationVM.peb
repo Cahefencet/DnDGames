@@ -1,0 +1,29 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}
+        Удаление записи
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container">
+            <h5>
+                <p>автор: <a href="/Users/{{ model.author.userID }}">{{ model.author.userName }}</a></p>
+                <p>Текст: {{ model.post.text }}</p>
+                <form method="post">
+                    <label class="form-label">
+                        Вы уверены, что хотите удалить этот пост?<br>
+                        Учтите: восстановить данные не удастся!
+                    </label>
+                    <input type="hidden" name="postID" value="{{ model.post.postID }}">
+                    <p>
+                        <button class="btn btn-danger btn-sm" type="submit">
+                            Подтверждаю
+                        </button>
+                        <a class="btn btn-success btn-sm" href="/Campaigns/{{ model.post.campaignID }}">Отмена</a>
+                    </p>
+                </form>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}

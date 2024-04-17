@@ -1,19 +1,26 @@
     {% extends "./Layout.peb" %}
 
-        {% block headTitle %}{{ model.character.name }}{% endblock %}
+        {% block headTitle %}
+            {{ model.character.name }}
+        {% endblock %}
 
         {% block title %}
-        {{ model.character.name }}
+            {{ model.character.name }}
         {% endblock %}
 
     {% block body %}
     <div class="container">
         <div class="container">
             <h5>
-                Владелец: <a href="/Users/{{ model.character.userID }}">тык</a><br>
-                Класс: {{ model.character.characterClass }}  <br>
-                Раса: {{ model.character.race }}  <br>
-                Уровень: {{ model.character.level }} <br>
+                <p>Владелец: <a href="/Users/{{ model.owner.userID }}">{{ model.owner.userName }}</a></p>
+                <p>Класс: {{ model.character.characterClass }}  </p>
+                <p>Раса: {{ model.character.race }}  </p>
+                <p>Уровень: {{ model.character.level }} </p>
+                <p>
+                    <a class="page-link" href="/Characters/{{ model.character.characterID }}/delete">
+                        <button class="btn btn-danger">Удалить персонажа</button>
+                    </a>
+                </p>
             </h5>
         </div>
     </div>

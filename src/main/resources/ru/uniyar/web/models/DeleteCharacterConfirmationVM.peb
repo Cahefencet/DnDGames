@@ -1,0 +1,31 @@
+{% extends "./Layout.peb" %}
+
+{% block headTitle %}
+    Удаление персонажа
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="container">
+        <h5>
+            <p>Имя: {{ model.character.name }}</p>
+            <p>Класс: {{ model.character.characterClass }}  </p>
+            <p>Раса: {{ model.character.race }}  </p>
+            <p>Уровень: {{ model.character.level }} </p>
+            <form method="post">
+                <label class="form-label">
+                    Вы уверены, что хотите удалить этого персонажа?<br>
+                    Учтите: восстановить данные не удастся!
+                </label>
+                <input type="hidden" name="charId" value="{{ model.character.characterID }}">
+                <p>
+                <button class="btn btn-danger btn-sm" type="submit">
+                    Подтверждаю
+                </button>
+                <a class="btn btn-success btn-sm" href="/Characters/{{ model.character.characterID }}">Отмена</a>
+                </p>
+            </form>
+        </h5>
+    </div>
+</div>
+{% endblock %}

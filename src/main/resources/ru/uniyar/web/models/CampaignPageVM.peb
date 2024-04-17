@@ -1,16 +1,18 @@
     {% extends "./Layout.peb" %}
 
-        {% block headTitle %}{{ model.campaign.campaignName }}{% endblock %}
+        {% block headTitle %}
+            {{ model.campaign.campaignName }}
+        {% endblock %}
 
         {% block title %}
-        {{ model.campaign.campaignName }}
+            {{ model.campaign.campaignName }}
         {% endblock %}
 
     {% block body %}
     <div class="container">
           <div class="container">
               <h5>
-                Мастер: <a href="/Users/{{ model.campaign.ownerID }}">тык</a><br>
+                Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a><br>
                 Айди кампании: {{ model.campaign.campaignID }}<br>
               </h5>
           </div>
@@ -20,7 +22,7 @@
             <div class="container">
                 <h4>
                     <a class="page-link" href="/Post/{{ model.campaign.campaignID }}">
-                        <button class="button-style">Добавить запись</button>
+                        <button class="btn btn-primary">Добавить запись</button>
                     </a>
                 </h4>
             </div>
@@ -32,7 +34,9 @@
                     <p>Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}</p>
                     <p> {{ post.text }}</p>
                     <p>Автор: <a href="/Users/{{ post.authorID }}">тык</a></p>
+                    <p><a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a></p>
                     <p>---------------------</p>
+                    <br>
                 </div>
             {% endfor %}
         </div>

@@ -25,7 +25,7 @@ class CharactersHandler : HttpHandler {
 
         return Response(Status.OK)
             .with(htmlView(request)
-                    of CharactersPageVM(findCharactersByUser(user.userID)))
+                    of CharactersPageVM(findCharactersByUserID(user.userID)))
     }
 }
 

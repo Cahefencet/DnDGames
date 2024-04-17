@@ -7,6 +7,8 @@ import org.http4k.core.with
 import org.http4k.core.Request
 import ru.uniyar.db.fetchAllPostsOfOneCampaign
 import ru.uniyar.db.findCampaignByID
+import ru.uniyar.db.findMasterIDByCampID
+import ru.uniyar.db.findUserByID
 import ru.uniyar.utils.htmlView
 import ru.uniyar.web.models.CampaignPageVM
 
@@ -21,7 +23,13 @@ class CampaignHandler : HttpHandler {
 
         val posts = fetchAllPostsOfOneCampaign(campaignID)
 
-        val model = CampaignPageVM(campaign, posts)
+        val userID = findMasterIDByCampID(campaignID)
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        val master = findUserByID(userID)
+            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        val model = CampaignPageVM(campaign, master, posts)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }

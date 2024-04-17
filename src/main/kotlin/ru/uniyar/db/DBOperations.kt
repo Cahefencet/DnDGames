@@ -99,11 +99,84 @@ private fun campaignCreation(campID: Int, usrID : Int) {
     }
 }
 
+fun deleteCharacterByID(id: Int) {
+    try {
+        return transaction {
+            Characters.deleteWhere {
+                Characters.characterID eq id
+            }
+            deleteFromCampaignUsersByCharID(id)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteFromCampaignUsersByCharID(characterID : Int) {
+    try {
+        return transaction {
+            CampaignUsers.deleteWhere {
+                (CampaignUsers.characterID eq characterID)
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun deletePostByID(id: Int) {
+    try {
+        return transaction {
+            CampaignPosts.deleteWhere {
+                CampaignPosts.postID eq id
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun deleteCampaignByID(id: Int) {
     try {
         return transaction {
+            deleteAllPostsByCampaignID(id)
+            deleteFromCampaignUsersByCampaignID(id)
             Campaigns.deleteWhere {
                 Campaigns.campaignID eq id
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteFromCampaignUsersByCampaignID(id: Int) {
+    try {
+        return transaction {
+            CampaignUsers.deleteWhere {
+                CampaignUsers.campaignID eq id
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteAllPostsByCampaignID(id: Int) {
+    try {
+        return transaction {
+            CampaignPosts.deleteWhere {
+                CampaignPosts.campaignID eq id
             }
         }
     } catch (e: ClassNotFoundException) {
@@ -119,6 +192,83 @@ fun deleteUserById(id: Int) {
             Users.deleteWhere {
                 Users.userID eq id
             }
+            deleteFromCampaignUsersByUserID(id)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteFromCampaignUsersByUserID(id : Int) {
+    try {
+        return transaction {
+            CampaignUsers.deleteWhere {
+                CampaignUsers.userID eq id
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findPostByID(id : Int) : CampaignPost? {
+    try {
+        return transaction {
+            CampaignPosts
+                .selectAll()
+                .where {
+                    CampaignPosts.postID eq id
+                }.firstOrNull()
+                ?.let {
+                    CampaignPost(
+                        it[CampaignPosts.postID],
+                        it[CampaignPosts.campaignID],
+                        it[CampaignPosts.authorID],
+                        it[CampaignPosts.text],
+                        it[CampaignPosts.visibility],
+                        it[CampaignPosts.gameDate],
+                        it[CampaignPosts.postDate],
+                    )
+                }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findMasterIDByCampID(campID: Int) : Int? {
+    try {
+        return transaction {
+            CampaignUsers
+                .selectAll()
+                .where {
+                    (CampaignUsers.campaignID eq campID)
+                        .and(CampaignUsers.playerRole eq PlayerRole.MASTER)
+                }.firstOrNull()
+                ?.get(CampaignUsers.userID)
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun findCampIDByPostID(id : Int) : Int? {
+    try {
+        return transaction {
+            CampaignPosts
+                .selectAll()
+                .where {
+                    CampaignPosts.postID eq id
+                }.firstOrNull()
+                ?.get(CampaignPosts.campaignID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -135,7 +285,8 @@ fun findCampIDByOwnerAndName(ownerID: Int, name: String) : Int? {
                 .where {
                     (Campaigns.ownerId eq ownerID)
                         .and(Campaigns.campaignName eq name)
-                }.firstOrNull()?.get(Campaigns.campaignID)
+                }.firstOrNull()
+                ?.get(Campaigns.campaignID)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -166,7 +317,7 @@ fun findCharacterIDByNameUserClassRaceLevel(character: Character) : Int? {
     }
 }
 
-fun findCharactersByUser(id: Int): List<Character> {
+fun findCharactersByUserID(id: Int): List<Character> {
     try {
         return transaction {
             Characters
@@ -297,7 +448,7 @@ fun fetchAllPostsOfOneCampaign(campaignID: Int): List<CampaignPost> {
                 .map {
                     row ->
                     CampaignPost(
-                        row[CampaignPosts.postId],
+                        row[CampaignPosts.postID],
                         row[CampaignPosts.campaignID],
                         row[CampaignPosts.authorID],
                         row[CampaignPosts.text],
