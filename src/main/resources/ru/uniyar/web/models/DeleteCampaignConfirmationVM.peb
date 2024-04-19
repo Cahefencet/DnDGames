@@ -1,7 +1,7 @@
     {% extends "./Layout.peb" %}
 
         {% block headTitle %}
-        Удаление персонажа
+        Удаление кампании
         {% endblock %}
 
     {% block body %}

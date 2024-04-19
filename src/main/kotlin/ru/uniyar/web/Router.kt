@@ -17,6 +17,8 @@ fun router() =
         "/Campaigns/{campaignID}/Users" bind POST to AddPlayerHandler(),
         "/Campaigns/{campaignID}/delete" bind GET to DeleteCampaignConfirmationHandler(),
         "/Campaigns/{campaignID}/delete" bind POST to DeleteCampaignHandler(),
+        "/Campaigns/{campaignID}/edit" bind GET to EditCampaignConfirmationHandler(),
+        "/Campaigns/{campaignID}/edit" bind POST to EditCampaignHandler(),
         "/Campaigns-new" bind GET to NewCampaignHandler(),
         "/Campaigns-new" bind POST to CampaignCreationHandler(),
         "/Users" bind GET to UsersHandler(),

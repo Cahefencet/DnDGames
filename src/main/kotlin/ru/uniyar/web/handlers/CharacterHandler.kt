@@ -14,13 +14,13 @@ class CharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
 
         val characterID = lensOrNull(characterIdLens, request)?.toIntOrNull()
-            ?: return Response(Status.FOUND).header("Location", "Characters")
+            ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         val character = findCharacterByID(characterID)
-            ?: return Response(Status.FOUND).header("Location", "Characters")
+            ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         val owner = findUserByID(character.userID)
-            ?: return Response(Status.FOUND).header("Location", "Characters")
+            ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         val model = CharacterPageVM(character, owner)
 
@@ -32,10 +32,10 @@ class DeleteCharacterConfirmationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
 
         val characterID = lensOrNull(characterIdLens, request)?.toIntOrNull()
-            ?: return Response(Status.FOUND).header("Location", "Characters")
+            ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         val character = findCharacterByID(characterID)
-            ?: return Response(Status.FOUND).header("Location", "Characters")
+            ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         val model = DeleteCharacterConfirmationVM(character)
 

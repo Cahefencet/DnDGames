@@ -20,9 +20,9 @@
             {% for character in model.characters %}
             <div class="container">
                 <h5>
-                    <a href="/Characters/{{ character.characterID }}">
-                        <p>{{ character.name }}</p>
-                    </a>
+                    <p><a href="/Characters/{{ character.characterID }}">
+                        {{ character.name }}
+                    </a></p>
                 </h5>
                 <p>Айди: {{ character.characterID }}</p>
                 <p>Владелец: <a href="/Users/{{ character.userID }}">тык</a></p>
@@ -38,8 +38,8 @@
                             </button>
                         </p>
                     </form>
+                    <br>
                 {% endif %}
-                <br>
             </div>
             {% endfor %}
     </div>

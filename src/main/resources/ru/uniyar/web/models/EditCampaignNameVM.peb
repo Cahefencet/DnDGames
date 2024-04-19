@@ -1,0 +1,25 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}
+        Изменить название кампании
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container-sm text-center mt-5" style="width: 60%">
+            <h5>
+                <form method="post">
+                    <p>Вы уверены, что хотите изменить название своей прекрасной кампании?</p>
+                    <input type="hidden" name="campId" value="{{ model.campaign.campaignID }}">
+                    <input type="text" name="newName" maxlength="100" value="{{ model.campaign.campaignName }}" required>
+                    <p> <br>
+                        <button class="btn btn-success btn-sm" type="submit">
+                            Изменить
+                        </button>
+                        <a class="btn btn-danger btn-sm" href="/Campaigns/{{ model.campaign.campaignID }}">Отмена</a>
+                    </p>
+                </form>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}

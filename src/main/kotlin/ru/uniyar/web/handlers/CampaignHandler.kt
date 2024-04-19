@@ -4,11 +4,7 @@ import org.http4k.core.*
 import org.http4k.core.body.form
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
-import ru.uniyar.web.models.CampaignPageVM
-import ru.uniyar.web.models.CampaignUsersPageVM
-import ru.uniyar.web.models.DeleteCampaignConfirmationVM
-import ru.uniyar.web.models.KickUserFromCampaignConfirmationVM
-import java.util.HashMap
+import ru.uniyar.web.models.*
 
 class CampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -180,3 +176,52 @@ class DeleteCampaignHandler: HttpHandler {
     }
 }
 
+class EditCampaignConfirmationHandler: HttpHandler {
+    override fun invoke(request: Request): Response {
+
+        val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+
+        val campaign = findCampaignByID(campID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        // coming soon
+        val userID = 3
+
+        if (userID != campaign.ownerID)
+            return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
+
+        val model = EditCampaignNameVM(campaign)
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class EditCampaignHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val requestedCampId = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+
+        val form = request.form()
+
+        val formCampId = form.findSingle("campId")?.toIntOrNull() ?: -2
+
+        if (requestedCampId != formCampId)
+            return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val newName = form.findSingle("newName") ?: ""
+
+        val campaign = findCampaignByID(formCampId)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        // coming soon
+        val userID = 3
+
+        if (campaign.ownerID != userID
+            || campaign.campaignName == newName
+            || newName.isEmpty()
+            || newName.length > 100)
+            return Response(Status.FOUND).header("Location", "/Campaigns/${requestedCampId}")
+
+        editCampaignName(requestedCampId, newName)
+
+        return Response(Status.FOUND).header("Location", "/Campaigns/${requestedCampId}")
+    }
+}

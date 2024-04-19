@@ -6,6 +6,22 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
 
 
+fun editCampaignName(campaignId: Int, newName: String) {
+    try {
+        return transaction {
+            Campaigns.update ({
+                (Campaigns.campaignID eq campaignId)
+            }) {
+                it[Campaigns.campaignName] = newName
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun addCharToCampaign(characterId: Int, userId: Int, campaignId: Int) {
     try {
         return transaction {
@@ -13,7 +29,7 @@ fun addCharToCampaign(characterId: Int, userId: Int, campaignId: Int) {
                 (CampaignUsers.userID eq userId)
                     .and (CampaignUsers.campaignID eq campaignId)
             }) {
-                it[characterID] = characterId
+                it[CampaignUsers.characterID] = characterId
             }
         }
     } catch (e: ClassNotFoundException) {

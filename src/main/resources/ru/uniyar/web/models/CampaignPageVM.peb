@@ -28,6 +28,9 @@
                     <a class="btn btn-info" href="/Campaigns/{{ model.campaign.campaignID }}/Users">
                         Список игроков
                     </a>
+                    <a class="btn btn-warning" href="/Campaigns/{{ model.campaign.campaignID }}/edit">
+                        Изменить название
+                    </a>
                     <a class="btn btn-danger" href="/Campaigns/{{ model.campaign.campaignID }}/delete">
                         Удалить
                     </a>
