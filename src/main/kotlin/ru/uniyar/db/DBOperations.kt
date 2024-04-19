@@ -46,6 +46,42 @@ fun insertPost(campaignPost: CampaignPost){
     }
 }
 
+fun insertPlayer(userId: Int, campaignId: Int){
+    try {
+        return transaction {
+            if (!isUserAlreadyInCampaign(userId, campaignId)) {
+                CampaignUsers.insert {
+                    it[userID] = userId
+                    it[campaignID] = campaignId
+                    it[playerRole] = PlayerRole.PLAYER
+                    it[characterID] = null
+                }
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun isUserAlreadyInCampaign(userId: Int, campaignId: Int) : Boolean {
+    try {
+        return transaction {
+            CampaignUsers
+                .selectAll()
+                .where {
+                    (CampaignUsers.userID eq userId)
+                        .and(CampaignUsers.campaignID eq campaignId)
+                }.count() > 0
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun insertUser(user: User) {
     try {
         return transaction {
@@ -215,6 +251,23 @@ private fun deleteFromCampaignUsersByUserID(id : Int) {
     }
 }
 
+fun deleteFromCampaignUsersByUserIDCampaignID(userId: Int, campId: Int) {
+    try {
+        return transaction {
+            CampaignUsers.deleteWhere {
+                (CampaignUsers.userID eq userId)
+                    .and(CampaignUsers.campaignID eq campId)
+                    .and(CampaignUsers.playerRole eq PlayerRole.PLAYER)
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+
 fun findPostByID(id : Int) : CampaignPost? {
     try {
         return transaction {
@@ -296,7 +349,6 @@ fun findCampIDByOwnerAndName(ownerID: Int, name: String) : Int? {
 }
 
 
-// лучше сделать, чтобы искал все совпадения (понадобится для исключения возможности создать 39825769834 одинаковых персонажей)
 fun findCharacterIDByNameUserClassRaceLevel(character: Character) : Int? {
     try {
         return transaction {
@@ -504,6 +556,32 @@ fun fetchAllUsers(): List<User> {
                     )
             }
         }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun fetchAllPlayersByCampaignID(campID: Int) : MutableList<CampaignUser> {
+    try {
+     return transaction {
+         CampaignUsers
+             .selectAll()
+             .where {
+                 (CampaignUsers.campaignID eq campID)
+                     .and(CampaignUsers.playerRole eq PlayerRole.PLAYER)
+             }.map {
+                 row ->
+                 CampaignUser(
+                     row[CampaignUsers.id],
+                     row[CampaignUsers.userID],
+                     row[CampaignUsers.campaignID],
+                     row[CampaignUsers.playerRole],
+                     row[CampaignUsers.characterID],
+                 )
+             }.toMutableList()
+     }
     } catch (e: ClassNotFoundException) {
         throw e
     } catch (e: SQLException) {

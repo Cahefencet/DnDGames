@@ -1,0 +1,27 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}
+        Выгнать игрока
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container">
+            <h5 class="text-center">
+                 <form method="post">
+                    <label class="form-label">
+                        <p>Выгнать {{ model.user.userName }} из кампании {{ model.campaign.campaignName }} ? </p>
+                    </label>
+                    <input type="hidden" name="userID" value="{{ model.user.userID }}">
+                    <input type="hidden" name="campaignID" value="{{ model.campaign.campaignID }}">
+                    <p>
+                        <button class="btn btn-danger btn-lg" type="submit">
+                            Подтверждаю
+                        </button>
+                        <a class="btn btn-success btn-lg" href="/Campaigns/{{ model.campaign.campaignID }}/Users">Отмена</a>
+                    </p>
+                </form>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}

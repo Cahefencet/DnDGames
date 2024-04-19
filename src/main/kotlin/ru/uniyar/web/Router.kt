@@ -13,6 +13,7 @@ fun router() =
         "/" bind GET to RootHandler(),
         "/Campaigns" bind GET to CampaignsHandler(),
         "/Campaigns/{campaignID}" bind GET to CampaignHandler(),
+        "/Campaigns/{campaignID}/Users" bind GET to CampaignUsersHandler(),
         //"/Campaigns/{campaignID}/delete" bind GET to DeleteCampaignConfirmationHandler(),
         //"/Campaigns/{campaignID}/delete" bind POST to DeleteCampaignHandler(),
         "/Campaigns-new" bind GET to NewCampaignHandler(),
@@ -29,5 +30,7 @@ fun router() =
         "/Post/{campaignID}" bind POST to PostCreationHandler(),
         "/Posts/{postID}/delete" bind GET to DeletePostConfirmationHandler(),
         "/Posts/{postID}/delete" bind POST to DeletePostHandler(),
+        "/Kick/{campaignID}/{userID}" bind GET to KickUserFromCampaignConfirmationHandler(),
+        "/Kick/{campaignID}/{userID}" bind POST to KickUserFromCampaignHandler(),
         static(ResourceLoader.Classpath("ru/uniyar/public")),
     )

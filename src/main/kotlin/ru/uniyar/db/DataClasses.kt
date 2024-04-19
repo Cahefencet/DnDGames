@@ -30,7 +30,8 @@ data class CampaignUser(
     val id: Int,
     val userID: Int,
     val campaignID: Int,
-    val playerRole: Role,
+    val playerRole: PlayerRole,
+    val characterID: Int?,
 )
 
 data class CampaignPost(
@@ -42,3 +43,6 @@ data class CampaignPost(
     val gameDate: LocalDate,
     val postDate: LocalDateTime,
 )
+
+
+data class UserCharacter(val user : User, val player: CampaignUser, val character: Character?)

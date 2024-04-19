@@ -53,7 +53,7 @@ class CharacterCreationHandler : HttpHandler {
         val character =
             Character(
                 -1,
-                3,
+                5,
                 name,
                 characterClass,
                 race,

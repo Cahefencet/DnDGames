@@ -12,8 +12,8 @@
     <div class="container">
           <div class="container">
               <h5>
-                Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a><br>
-                Айди кампании: {{ model.campaign.campaignID }}<br>
+                <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
+                <p>Айди кампании: {{ model.campaign.campaignID }}</p>
               </h5>
           </div>
         <div class="container">
@@ -21,9 +21,14 @@
             <br>
             <div class="container">
                 <h4>
-                    <a class="page-link" href="/Post/{{ model.campaign.campaignID }}">
-                        <button class="btn btn-primary">Добавить запись</button>
+                    <row>
+                    <a class="btn btn-primary" href="/Post/{{ model.campaign.campaignID }}">
+                        Добавить запись
                     </a>
+                        <a class="btn btn-info" href="/Campaigns/{{ model.campaign.campaignID }}/Users">
+                            Список игроков
+                        </a>
+                    </row>
                 </h4>
             </div>
             <br>
