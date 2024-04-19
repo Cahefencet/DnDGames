@@ -6,7 +6,7 @@ import ru.uniyar.auth.Role
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
 import ru.uniyar.web.models.CharactersPageVM
-import ru.uniyar.web.models.NewCharacterVM
+import ru.uniyar.web.models.NewCharacterPageVM
 
 class CharactersHandler : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -31,7 +31,7 @@ class CharactersHandler : HttpHandler {
 
 class NewCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val model = NewCharacterVM()
+        val model = NewCharacterPageVM()
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

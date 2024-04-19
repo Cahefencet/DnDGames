@@ -29,6 +29,8 @@ fun router() =
         "/Characters-new" bind POST to CharacterCreationHandler(),
         "/Characters/{characterID}/delete" bind GET to DeleteCharacterConfirmationHandler(),
         "/Characters/{characterID}/delete" bind POST to DeleteCharacterHandler(),
+        "/Characters/{characterID}/edit" bind GET to EditCharacterConfirmationHandler(),
+        "/Characters/{characterID}/edit" bind POST to EditCharacterHandler(),
         "/Post/{campaignID}" bind GET to NewPostHandler(),
         "/Post/{campaignID}" bind POST to PostCreationHandler(),
         "/Posts/{postID}/delete" bind GET to DeletePostConfirmationHandler(),

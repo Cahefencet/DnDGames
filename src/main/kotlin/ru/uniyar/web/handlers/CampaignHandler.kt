@@ -100,7 +100,7 @@ class KickUserFromCampaignConfirmationHandler : HttpHandler {
         val user = findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
 
-        val model = KickUserFromCampaignConfirmationVM(user, campaign)
+        val model = KickUserFromCampaignConfirmationPageVM(user, campaign)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -148,7 +148,7 @@ class DeleteCampaignConfirmationHandler : HttpHandler {
         val campaign = findCampaignByID(campID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        val model = DeleteCampaignConfirmationVM(campaign)
+        val model = DeleteCampaignConfirmationPageVM(campaign)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -190,7 +190,7 @@ class EditCampaignConfirmationHandler: HttpHandler {
         if (userID != campaign.ownerID)
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        val model = EditCampaignNameVM(campaign)
+        val model = EditCampaignNamePageVM(campaign)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

@@ -4,8 +4,8 @@ import org.http4k.core.*
 import org.http4k.core.body.form
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
-import ru.uniyar.web.models.DeletePostConfirmationVM
-import ru.uniyar.web.models.NewPostVM
+import ru.uniyar.web.models.DeletePostConfirmationPageVM
+import ru.uniyar.web.models.NewPostPageVM
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -18,7 +18,7 @@ class NewPostHandler : HttpHandler {
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val model = NewPostVM(campaign)
+        val model = NewPostPageVM(campaign)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
@@ -93,7 +93,7 @@ class DeletePostConfirmationHandler : HttpHandler {
         val author = findUserByID(post.authorID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val model = DeletePostConfirmationVM(post, author)
+        val model = DeletePostConfirmationPageVM(post, author)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

@@ -8,7 +8,7 @@ import ru.uniyar.db.findCampIDByOwnerAndName
 import ru.uniyar.db.insertCampaign
 import ru.uniyar.utils.htmlView
 import ru.uniyar.web.models.CampaignsPageVM
-import ru.uniyar.web.models.NewCampaignVM
+import ru.uniyar.web.models.NewCampaignPageVM
 
 class CampaignsHandler : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -19,7 +19,7 @@ class CampaignsHandler : HttpHandler {
 
 class NewCampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val model = NewCampaignVM()
+        val model = NewCampaignPageVM()
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

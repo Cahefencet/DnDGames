@@ -1,0 +1,28 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}
+        Изменить персонажа
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container-sm text-center mt-5" style="width: 80%">
+            <h5>
+                <form method="post">
+                    <p>Вы уверены, что хотите изменить данные о своём прекрасном персонаже?</p>
+                    <p><input type="hidden" name="charId" value="{{ model.character.characterID }}"></p>
+                    <p><input type="text" name="newName" maxlength="100" value="{{ model.character.name }}" required></p>
+                    <p><input type="text" name="newClass" maxlength="100" value="{{ model.character.characterClass }}" required></p>
+                    <p><input type="text" name="newRace" maxlength="50" value="{{ model.character.race }}" required></p>
+                    <p><input type="number" name="newLevel" maxlength="3" value="{{ model.character.level }}" required></p>
+                    <p> <br>
+                        <button class="btn btn-success btn-sm" type="submit">
+                            Изменить
+                        </button>
+                        <a class="btn btn-danger btn-sm" href="/Characters/{{ model.character.characterID }}">Отмена</a>
+                    </p>
+                </form>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}

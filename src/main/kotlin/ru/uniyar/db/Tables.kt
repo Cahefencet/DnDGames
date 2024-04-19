@@ -22,7 +22,7 @@ object Characters: Table() {
     val characterID = integer("character_id")
     val userID = integer("user_id")
     val name = varchar("name", 100)
-    val characterClass = varchar("class", 50)
+    val characterClass = varchar("class", 100)
     val race = varchar("race", 50)
     val level = integer("level")
 }

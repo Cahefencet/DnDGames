@@ -6,6 +6,25 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
 
 
+fun editCharacter(newCharacter: Character){
+    try {
+        return transaction {
+            Characters.update({
+                (Characters.characterID eq newCharacter.characterID)
+            }) {
+                it[Characters.name] = newCharacter.name
+                it[Characters.characterClass] = newCharacter.characterClass
+                it[Characters.race] = newCharacter.race
+                it[Characters.level] = newCharacter.level
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun editCampaignName(campaignId: Int, newName: String) {
     try {
         return transaction {

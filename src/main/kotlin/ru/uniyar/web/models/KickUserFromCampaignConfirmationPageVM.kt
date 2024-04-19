@@ -7,4 +7,4 @@ import ru.uniyar.db.User
 
 // val selfFlag : Boolean
 
-class KickUserFromCampaignConfirmationVM(val user: User, val campaign: Campaign) : ViewModel
+class KickUserFromCampaignConfirmationPageVM(val user: User, val campaign: Campaign) : ViewModel
