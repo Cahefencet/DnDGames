@@ -10,7 +10,7 @@
             <h5 class="text-center">
                  <form method="post">
                     <label class="form-label">
-                        <p>Выгнать {{ model.user.userName }} из кампании {{ model.campaign.campaignName }} ? </p>
+                        <p>Выгнать {{ model.user.userName }} из кампании '{{ model.campaign.campaignName }}'? </p>
                     </label>
                     <input type="hidden" name="userID" value="{{ model.user.userID }}">
                     <input type="hidden" name="campaignID" value="{{ model.campaign.campaignID }}">

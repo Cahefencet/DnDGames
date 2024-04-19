@@ -21,11 +21,11 @@ class CharactersHandler : HttpHandler {
         if (user.role == Role.MODERATOR)
             return Response(Status.OK)
                 .with(htmlView(request)
-                        of CharactersPageVM(fetchAllCharacters()))
+                        of CharactersPageVM(fetchAllCharacters(), false))
 
         return Response(Status.OK)
             .with(htmlView(request)
-                    of CharactersPageVM(findCharactersByUserID(user.userID)))
+                    of CharactersPageVM(findCharactersByUserID(user.userID), false))
     }
 }
 
@@ -42,7 +42,7 @@ class CharacterCreationHandler : HttpHandler {
         val valid = getValidData(request)
 
         if (valid.size < 4)
-            return Response(Status.OK).header("Location", "/Characters")
+            return Response(Status.FOUND).header("Location", "/Characters")
         
         val name = valid[0]
         val characterClass = valid[1]
@@ -90,5 +90,44 @@ class CharacterCreationHandler : HttpHandler {
         }
 
         return mutableListOf(name, characterClass, race, level)
+    }
+}
+
+class ShowCharactersToChooseHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+        val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
+
+        findCampaignByID(campID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        findUserByID(userID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}/Users")
+
+        val model = CharactersPageVM(findCharactersByUserID(userID), chooseFlag = true)
+
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class ChooseCharacterHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+        val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
+
+        val charID = request.form().findSingle("charID")?.toIntOrNull() ?: -1
+
+        findCampaignByID(campID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        findUserByID(userID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}/Users")
+
+        findCharacterByID(charID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}/Users")
+
+        addCharToCampaign(charID, userID, campID)
+
+        return Response(Status.FOUND).header("Location", "/Campaigns/${campID}/Users")
     }
 }

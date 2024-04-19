@@ -1,0 +1,28 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}
+        Удаление персонажа
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container">
+            <h5>
+                <p>Название: {{ model.campaign.campaignName }}</p>
+                <form method="post">
+                    <label class="form-label">
+                        Вы уверены, что хотите удалить эту кампанию?<br>
+                        Учтите: восстановить данные не удастся!
+                    </label>
+                    <input type="hidden" name="campId" value="{{ model.campaign.campaignID }}">
+                    <p>
+                        <button class="btn btn-danger btn-sm" type="submit">
+                            Подтверждаю
+                        </button>
+                        <a class="btn btn-success btn-sm" href="/Campaigns/{{ model.campaign.campaignID }}">Отмена</a>
+                    </p>
+                </form>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}

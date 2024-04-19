@@ -29,7 +29,8 @@
         <p style="text-align:left;">Что было:</p>
         <textarea class="form-control" name="text" id="text" rows="20"
                   placeholder="А разве что-то было?.. Что ВООБЩЕ было?.. Что есть?... Кто мы?... Кто я?..."
-                  maxlength="3500" required></textarea>
+                  maxlength="3500" required>
+        </textarea>
     </div>
     <br>
 

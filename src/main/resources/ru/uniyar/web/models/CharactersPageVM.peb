@@ -8,13 +8,15 @@
 
     {% block body %}
     <div class="container">
-        <div class="container">
-            <h4>
-                <a class="page-link" href="/Characters-new">
-                    <button class="btn btn-primary">Добавить персонажа</button>
-                </a>
-            </h4>
-        </div>
+        {% if not model.chooseFlag %}
+            <div class="container">
+                <h4>
+                    <a class="page-link" href="/Characters-new">
+                        <button class="btn btn-primary">Добавить персонажа</button>
+                    </a>
+                </h4>
+            </div>
+        {% endif %}
             {% for character in model.characters %}
             <div class="container">
                 <h5>
@@ -27,6 +29,16 @@
                 <p>Класс: {{ character.characterClass }}</p>
                 <p>Раса: {{ character.race }}</p>
                 <p>Уровень: {{ character.level }}</p>
+                {% if model.chooseFlag %}
+                    <form method="post">
+                        <input type="hidden" name="charID" value="{{ character.characterID }}">
+                        <p>
+                            <button class="btn btn-danger btn-sm" type="submit">
+                                Выбрать
+                            </button>
+                        </p>
+                    </form>
+                {% endif %}
                 <br>
             </div>
             {% endfor %}

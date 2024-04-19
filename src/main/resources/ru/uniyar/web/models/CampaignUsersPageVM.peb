@@ -1,60 +1,82 @@
     {% extends "./Layout.peb" %}
 
         {% block headTitle %}
-            {{ model.campaign.campaignName }}
+        {{ model.campaign.campaignName }}
         {% endblock %}
 
-    {% block title %}
-    Список игроков
-    {% endblock %}
+        {% block title %}
+        Список игроков
+        {% endblock %}
 
     {% block body %}
-        <br>
-    <div class="container-sm" style="display: flex; justify-content: center;">
-        <table class="table" style="width: 60%">
-            <caption style="text-align: center;">
-                Если в таблице есть ячейки, выделенные красным, значит,
-                не все игроки выбрали персонажей для данной кампании.
-            </caption>
-            <thead class="table-dark">
-            <tr>
-                <th scope="col" style="width: 10%; text-align: center;">№</th>
-                <th scope="col" style="width: 35%; text-align: center;">Ник</th>
-                <th scope="col" style="width: 35%; text-align: center;">Персонаж</th>
-                <th scope="col" style="width: 10%; text-align: center;">Уровень</th>
-                <th class="table-danger" scope="col" style="width: 10%; text-align: center;">Выгнать</th>
-            </tr>
-            </thead>
-            <tbody>
-                    {% for player in model.userCharacters %}
-                <tr style="text-align: center;">
-                    <td>{{ loop.index + 1 }}</td>
-                    <td>
-                        <a href="/Users/{{ player.user.userID }}">
-                                {{ player.user.userName }}
-                        </a>
-                    </td>
+    <br>
+    <div class="container-sm" style="margin: 0 auto; width: 60%;">
+        <div>
+            {% if model.void %}
+                <h5>Здесь будет список ваших игроков (он пока пуст)</h5>
+            {% else %}
+                <table class="table">
+                    <caption style="text-align: center;">
+                        Если в таблице есть ячейки, выделенные красным, значит,
+                        не все игроки выбрали персонажей для данной кампании.
+                    </caption>
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="width: 10%; text-align: center;">№</th>
+                        <th scope="col" style="width: 35%; text-align: center;">Ник</th>
+                        <th scope="col" style="width: 35%; text-align: center;">Персонаж</th>
+                        <th scope="col" style="width: 10%; text-align: center;">Уровень</th>
+                        <th class="table-danger" scope="col" style="width: 10%; text-align: center;">Выгнать</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                            {% for player in model.userCharacters %}
+                        <tr style="text-align: center;">
+                            <td>{{ loop.index + 1 }}</td>
+                            <td>
+                                <a href="/Users/{{ player.user.userID }}">
+                                        {{ player.user.userName }}
+                                </a>
+                            </td>
                             {% if player.character == null %}
-                                <td class="table-danger"></td>
-                            {% else %}
-                                <td >{{ player.character.name }} </td>
-                            {% endif %}
-
-                            {% if player.character == null %}
-                                <td class="table-danger"></td>
-                            {% else %}
-                                <td>{{ player.character.level }}</td>
-                            {% endif %}
-                                <td>
-                                    <a class="btn btn-danger btn-sm"
-                                       href="/Kick/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
-                                        ✖️
+                                <td class="table-danger">
+                                    <a class="btn btn-secondary"
+                                       href="/Choose/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
+                                        Выбрать персонажа
                                     </a>
                                 </td>
-                 </tr>
-                    {% endfor %}
-            </tbody>
-        </table>
+                                {% else %}
+                                <td>{{ player.character.name }}</td>
+                            {% endif %}
+                            {% if player.character == null %}
+                                <td class="table-danger"></td>
+                                {% else %}
+                                <td>{{ player.character.level }}</td>
+                            {% endif %}
+                            <td>
+                                <a class="btn btn-danger btn-sm" href="/Kick/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
+                                    ✖️
+                                </a>
+                            </td>
+                        </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+        <div style="width: 50%">
+            <form method="post">
+                <div class="container" style="margin-bottom: 10px;">
+                    <label for="nicknameInput" class="form-label">Чтобы добавить игрока, введите его ник или ID:</label>
+                    <div class="d-flex align-items-center">
+                        <div style="flex: 1;">
+                            <input type="text" name="input" class="form-control me-1" id="nicknameInput" aria-describedby="nicknameHelp" placeholder="123456 VasyaPupkin" required>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="margin-left: 10px;">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
     {% endblock %}
-

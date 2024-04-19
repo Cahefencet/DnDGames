@@ -6,6 +6,7 @@ import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
 import ru.uniyar.web.models.CampaignPageVM
 import ru.uniyar.web.models.CampaignUsersPageVM
+import ru.uniyar.web.models.DeleteCampaignConfirmationVM
 import ru.uniyar.web.models.KickUserFromCampaignConfirmationVM
 import java.util.HashMap
 
@@ -40,7 +41,11 @@ class CampaignUsersHandler : HttpHandler {
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val model = CampaignUsersPageVM(campaign, getData(campaignID))
+        val players = getData(campaignID)
+
+        val flag = (players.size == 0)
+
+        val model = CampaignUsersPageVM(campaign, players, flag)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -58,6 +63,30 @@ class CampaignUsersHandler : HttpHandler {
         }
 
         return userCharacters
+    }
+}
+
+class AddPlayerHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        findCampaignByID(campaignID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val form = request.form()
+
+        val nameOrId = form.findSingle("input")
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}/Users")
+
+        val user = findUserByID(nameOrId.toIntOrNull() ?: -1)
+            ?: findUserByName(nameOrId)
+
+        if (user == null)
+            return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}/Users")
+
+        insertPlayer(user.userID, campaignID)
+        return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}/Users")
     }
 }
 
@@ -113,5 +142,41 @@ class KickUserFromCampaignHandler : HttpHandler {
     }
 
     private data class UserIDCampaignID(val userID: Int, val campaignID: Int)
+}
+
+class DeleteCampaignConfirmationHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+
+        val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+
+        val campaign = findCampaignByID(campID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val model = DeleteCampaignConfirmationVM(campaign)
+
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class DeleteCampaignHandler: HttpHandler {
+    override fun invoke(request: Request): Response {
+        val requestedCampID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+
+        val formCampID = request.form().findSingle("campId")?.toIntOrNull() ?: -2
+
+        if (requestedCampID != formCampID)
+            return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val campaign = findCampaignByID(formCampID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        // coming soon
+        val userID = 3
+
+        if (campaign.ownerID == userID)
+            deleteCampaignByID(formCampID)
+
+        return Response(Status.FOUND).header("Location", "/Campaigns")
+    }
 }
 

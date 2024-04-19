@@ -5,6 +5,24 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.SQLException
 
+
+fun addCharToCampaign(characterId: Int, userId: Int, campaignId: Int) {
+    try {
+        return transaction {
+            CampaignUsers.update({
+                (CampaignUsers.userID eq userId)
+                    .and (CampaignUsers.campaignID eq campaignId)
+            }) {
+                it[characterID] = characterId
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun insertCharacter(character: Character) {
     try {
         return transaction {
