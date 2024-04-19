@@ -41,6 +41,24 @@ fun editCampaignName(campaignId: Int, newName: String) {
     }
 }
 
+fun editPost(newPost : CampaignPost) {
+    try {
+        return transaction {
+            CampaignPosts.update ({
+                (CampaignPosts.postID eq newPost.postId)
+            }) {
+                it[CampaignPosts.text] = newPost.text
+                it[CampaignPosts.visibility] = newPost.visibility
+                it[CampaignPosts.gameDate] = newPost.gameDate
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
 fun addCharToCampaign(characterId: Int, userId: Int, campaignId: Int) {
     try {
         return transaction {
@@ -547,11 +565,12 @@ fun fetchAllPostsOfOneCampaign(campaignID: Int): List<CampaignPost> {
         return transaction {
             CampaignPosts
                 .selectAll()
+                .orderBy(CampaignPosts.postDate, SortOrder.DESC)
                 .where {
                     CampaignPosts.campaignID eq campaignID
                 }
                 .map {
-                    row ->
+                        row ->
                     CampaignPost(
                         row[CampaignPosts.postID],
                         row[CampaignPosts.campaignID],

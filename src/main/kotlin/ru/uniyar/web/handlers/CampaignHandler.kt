@@ -15,7 +15,7 @@ class CampaignHandler : HttpHandler {
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val posts = fetchAllPostsOfOneCampaign(campaignID).reversed()
+        val posts = fetchAllPostsOfOneCampaign(campaignID)
 
         val userID = findMasterIDByCampID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")

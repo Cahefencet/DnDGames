@@ -35,6 +35,8 @@ fun router() =
         "/Post/{campaignID}" bind POST to PostCreationHandler(),
         "/Posts/{postID}/delete" bind GET to DeletePostConfirmationHandler(),
         "/Posts/{postID}/delete" bind POST to DeletePostHandler(),
+        "/Posts/{campaignID}/edit/{postID}" bind GET to EditPostConfirmationHandler(),
+        "/Posts/{campaignID}/edit/{postID}" bind POST to EditPostHandler(),
         "/Kick/{campaignID}/{userID}" bind GET to KickUserFromCampaignConfirmationHandler(),
         "/Kick/{campaignID}/{userID}" bind POST to KickUserFromCampaignHandler(),
         "/Choose/{campaignID}/{userID}" bind GET to ShowCharactersToChooseHandler(),

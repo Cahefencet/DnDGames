@@ -1,55 +1,52 @@
     {% extends "./Layout.peb" %}
 
         {% block headTitle %}
-            {{ model.campaign.campaignName }}
+        {{ model.campaign.campaignName }}
         {% endblock %}
 
         {% block title %}
-            {{ model.campaign.campaignName }}
+        {{ model.campaign.campaignName }}
         {% endblock %}
 
     {% block body %}
     <div class="container">
-          <div class="container">
-              <h5>
+        <div>
+            <h5>
                 <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
                 <p>Айди кампании: {{ model.campaign.campaignID }}</p>
-              </h5>
-          </div>
-        <div class="container">
-            <br>
-            <br>
-            <div class="container">
-                <h4>
-                    <row>
-                    <a class="btn btn-primary" href="/Post/{{ model.campaign.campaignID }}">
-                        Добавить запись
-                    </a>
-                    <a class="btn btn-info" href="/Campaigns/{{ model.campaign.campaignID }}/Users">
-                        Список игроков
-                    </a>
-                    <a class="btn btn-warning" href="/Campaigns/{{ model.campaign.campaignID }}/edit">
-                        Изменить название
-                    </a>
-                    <a class="btn btn-danger" href="/Campaigns/{{ model.campaign.campaignID }}/delete">
-                        Удалить
-                    </a>
-                    </row>
-                </h4>
-            </div>
-            <br>
-            <br>
-            {% for post in model.posts %}
-                <div class="container">
-                    <p>Дата публикации: {{ post.postDate | date("dd.MM.yyyy HH:mm:ss") }}</p>
-                    <p>Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}</p>
-                    <p> {{ post.text }}</p>
-                    <p>Автор: <a href="/Users/{{ post.authorID }}">тык</a></p>
-                    <p><a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a></p>
-                    <p>---------------------</p>
-                    <br>
+            </h5>
+        </div>
+
+        <br>
+        <br>
+
+        <div>
+            <h4>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-primary" href="/Post/{{ model.campaign.campaignID }}">Добавить запись</a>
+                    <a class="btn btn-info" href="/Campaigns/{{ model.campaign.campaignID }}/Users">Список игроков</a>
+                    <a class="btn btn-warning" href="/Campaigns/{{ model.campaign.campaignID }}/edit">Изменить название</a>
+                    <a class="btn btn-danger" href="/Campaigns/{{ model.campaign.campaignID }}/delete">Удалить</a>
                 </div>
-            {% endfor %}
+            </h4>
+        </div>
+
+        <br>
+        <br>
+
+        <div>
+                {% for post in model.posts %}
+                <p>Дата публикации: {{ post.postDate | date("dd.MM.yyyy HH:mm:ss") }}</p>
+                <p>Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}</p>
+                <p>{{ post.text }}</p>
+                <p>Автор: <a href="/Users/{{ post.authorID }}">тык</a></p>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
+                    <a class="btn btn-warning btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
+                </div>
+                <p>---------------------</p>
+                <br>
+                {% endfor %}
         </div>
     </div>
     {% endblock %}
