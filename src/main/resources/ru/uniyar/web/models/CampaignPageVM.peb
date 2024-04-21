@@ -41,8 +41,8 @@
                 <p>{{ post.text }}</p>
                 <p>Автор: <a href="/Users/{{ post.authorID }}">тык</a></p>
                 <div class="btn-group" role="group">
-                    <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
                     <a class="btn btn-warning btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
+                    <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
                 </div>
                 <p>---------------------</p>
                 <br>

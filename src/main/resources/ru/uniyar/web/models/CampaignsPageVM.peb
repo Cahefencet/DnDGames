@@ -1,30 +1,38 @@
     {% extends "./Layout.peb" %}
 
-    {% block headTitle %}Список кампаний{% endblock %}
+        {% block headTitle %}Список кампаний{% endblock %}
 
-    {% block title %}
+        {% block title %}
         Список кампаний
-    {% endblock %}
+        {% endblock %}
 
     {% block body %}
-        <div class="container">
-            <div class="container">
-                <h4>
-                    <a class="page-link" href="/Campaigns-new">
-                        <button class="btn btn-primary">Создать новую кампанию</button>
-                    </a>
-                </h4>
-            </div>
+        <br>
+    <div class="container">
+        <div class="row">
             {% for campaign in model.campaigns %}
-                <div class="container">
-                    <h5>
-                        <a href="/Campaigns/{{ campaign.campaignID }}">
-                            <p>{{ campaign.campaignName }}</p>
-                        </a>
-                    </h5>
-                    <p>Мастер: <a href="/Users/{{ campaign.ownerID }}">тык</a></p>
-                    <p>Айди кампании: {{ campaign.campaignID }}</p>
+                <div class="col-md-6">
+                    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                        <div class="col p-4 d-flex flex-column position-static border border-dark ">
+                            <strong class="d-inline-block mb-2 text-primary-emphasis">ID: {{ campaign.campaignID }}</strong>
+                            <h3 class="mb-0">{{ campaign.campaignName }}</h3>
+                                <div class="mb-1 text-body-secondary">
+                                    Кликните для перехода к кампании
+                                </div>
+                            <a href="/Campaigns/{{ campaign.campaignID }}" class="icon-link gap-1 icon-link-hover stretched-link"></a>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
+        <br>
+        <div class="container">
+            <h4>
+                <a class="btn btn-dark" href="/Campaigns-new">
+                    Создать новую кампанию
+                </a>
+            </h4>
+        </div>
+
+    </div>
     {% endblock %}
