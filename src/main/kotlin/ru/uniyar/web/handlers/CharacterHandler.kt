@@ -61,7 +61,7 @@ class DeleteCharacterHandler : HttpHandler {
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         // coming soon
-        val userID = 3
+        val userID = 5
 
         if (character.userID == userID)
             deleteCharacterByID(formCharacterID)
@@ -78,7 +78,7 @@ class EditCharacterConfirmationHandler : HttpHandler {
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         // coming soon
-        val userID = 3
+        val userID = 5
 
         if (userID != character.userID)
             return Response(Status.FOUND).header("Location", "/Characters/${charID}")
@@ -108,19 +108,15 @@ class EditCharacterHandler : HttpHandler {
         val newLevel = form.findSingle("newLevel")?.toIntOrNull() ?: 0
 
         // coming soon
-        val userID = 3
+        val userID = 5
 
         if (character.userID != userID
-            || character.name == newName
-            || character.characterClass == newClass
-            || character.race == newRace
-            || character.level == newLevel
             || newRace.length > 50
-            || newRace.isEmpty()
-            || newLevel > 20
-            || newLevel < 1
             || newName.length > 100
             || newClass.length > 100
+            || newLevel > 20
+            || newLevel < 1
+            || newRace.isEmpty()
             || newName.isEmpty()
             || newClass.isEmpty())
             return Response(Status.FOUND).header("Location", "/Characters/${requestCharId}")

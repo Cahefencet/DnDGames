@@ -3,7 +3,6 @@ package ru.uniyar
 import config.AppConfig.Companion.readConfiguration
 import org.http4k.server.Netty
 import org.http4k.server.asServer
-import ru.uniyar.auth.Role
 import ru.uniyar.auth.Users
 import ru.uniyar.db.*
 import ru.uniyar.utils.DBConnection

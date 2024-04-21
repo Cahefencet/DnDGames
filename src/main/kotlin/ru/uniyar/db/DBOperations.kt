@@ -208,11 +208,11 @@ private fun campaignCreation(campID: Int, usrID : Int) {
 
 fun deleteCharacterByID(id: Int) {
     try {
+        deleteFromCampaignUsersByCharID(id)
         return transaction {
             Characters.deleteWhere {
                 Characters.characterID eq id
             }
-            deleteFromCampaignUsersByCharID(id)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -224,8 +224,10 @@ fun deleteCharacterByID(id: Int) {
 private fun deleteFromCampaignUsersByCharID(characterID : Int) {
     try {
         return transaction {
-            CampaignUsers.deleteWhere {
+            CampaignUsers.update ({
                 (CampaignUsers.characterID eq characterID)
+            }) {
+                it[CampaignUsers.characterID] = null
             }
         }
     } catch (e: ClassNotFoundException) {
@@ -295,11 +297,11 @@ private fun deleteAllPostsByCampaignID(id: Int) {
 
 fun deleteUserById(id: Int) {
     try {
+        deleteFromCampaignUsersByUserID(id)
         return transaction {
             Users.deleteWhere {
                 Users.userID eq id
             }
-            deleteFromCampaignUsersByUserID(id)
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -565,7 +567,7 @@ fun fetchAllPostsOfOneCampaign(campaignID: Int): List<CampaignPost> {
         return transaction {
             CampaignPosts
                 .selectAll()
-                .orderBy(CampaignPosts.postDate, SortOrder.DESC)
+                .orderBy(CampaignPosts.postDate, SortOrder.ASC)
                 .where {
                     CampaignPosts.campaignID eq campaignID
                 }

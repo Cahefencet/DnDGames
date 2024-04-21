@@ -7,17 +7,39 @@
         {% endblock %}
 
     {% block body %}
-    <div class="container">
-            {% for user in model.users %}
-            <div class="container">
-                <h5>
-                    <a href="/Users/{{ user.userID }}">
-                        <p>{{ user.userName }}</p>
-                    </a>
-                </h5>
-                <p>Айди: {{ user.userID }}</p>
-                <p>Роль: {{ user.role }}</p>
-            </div>
-            {% endfor %}
+
+    <br>
+    <div class="container-sm" style="margin: 0 auto; width: 60%;">
+        <table class="table table-striped table-hover table-bordered border border-dark">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col" style="width: 5%; text-align: center;">№</th>
+                    <th scope="col" style="width: 30%; text-align: center;">ID</th>
+                    <th scope="col" style="width: 30%; text-align: center;">Ник</th>
+                    <th scope="col" style="width: 30%; text-align: center;">Роль</th>
+                    <th class="table-danger" scope="col" style="width: 5%; text-align: center;">Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in model.users %}
+                    <tr style="text-align: center;">
+                        <td>
+                                {{ loop.index + 1 }}
+                        </td>
+                        <td>
+                            <a href="/Users/{{ user.userID }}">
+                                {{ user.userName }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ user.userID }}
+                        </td>
+                        <td>
+                            {{ user.role }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endblock %}

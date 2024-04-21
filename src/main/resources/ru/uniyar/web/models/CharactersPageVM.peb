@@ -8,39 +8,50 @@
 
     {% block body %}
     <div class="container">
+        <br>
+    <div class="row">
+        {% for character in model.characters %}
+            <div class="col-md-2 mb-3">
+                <div class="card h-100 border border-dark">
+                    <div class="card-body">
+                        <p>
+                            <a class="btn btn-dark" href="/Characters/{{ character.characterID }}">
+                                {{ character.name }}
+                            </a>
+                        </p>
+                        <p>ID: {{ character.characterID }}</p>
+                        <p>Класс: {{ character.characterClass }}</p>
+                        <p>Раса: {{ character.race }}</p>
+                        <p>Уровень: {{ character.level }}</p>
+                        <div class="container" style="text-center">
+                        {% if model.chooseFlag %}
+                            <form method="post">
+                                <input type="hidden" name="charID" value="{{ character.characterID }}">
+                                <p>
+                                    <button class="btn btn-danger btn-sm" type="submit">Выбрать</button>
+                                </p>
+                            </form>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% if loop.index % 5 == 0 and not loop.last and not loop.first %}
+            </div>
+            <div class="row">
+            {% endif %}
+        {% endfor %}
+    </div>
+        <br>
         {% if not model.chooseFlag %}
             <div class="container">
                 <h4>
                     <a class="page-link" href="/Characters-new">
-                        <button class="btn btn-primary">Добавить персонажа</button>
+                        <button class="btn btn-dark">Добавить персонажа</button>
                     </a>
                 </h4>
             </div>
         {% endif %}
-            {% for character in model.characters %}
-            <div class="container">
-                <h5>
-                    <p><a href="/Characters/{{ character.characterID }}">
-                        {{ character.name }}
-                    </a></p>
-                </h5>
-                <p>Айди: {{ character.characterID }}</p>
-                <p>Владелец: <a href="/Users/{{ character.userID }}">тык</a></p>
-                <p>Класс: {{ character.characterClass }}</p>
-                <p>Раса: {{ character.race }}</p>
-                <p>Уровень: {{ character.level }}</p>
-                {% if model.chooseFlag %}
-                    <form method="post">
-                        <input type="hidden" name="charID" value="{{ character.characterID }}">
-                        <p>
-                            <button class="btn btn-danger btn-sm" type="submit">
-                                Выбрать
-                            </button>
-                        </p>
-                    </form>
-                    <br>
-                {% endif %}
-            </div>
-            {% endfor %}
     </div>
     {% endblock %}
