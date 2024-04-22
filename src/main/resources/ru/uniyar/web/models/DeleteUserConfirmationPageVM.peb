@@ -1,0 +1,29 @@
+    {% extends "./Layout.peb" %}
+
+        {% block headTitle %}
+        Удаление пользователя
+        {% endblock %}
+
+    {% block body %}
+    <div class="container">
+        <div class="container">
+            <h5>
+                <p>Ник: {{ model.user.userName }}</p>
+                <p>ID: {{ model.user.userID }}</p>
+                <p>Роль: {{ model.user.role }}  </p>
+                <form method="post">
+                    <label class="form-label">
+                        Вы уверены, что хотите удалить этого пользователя?<br>
+                    </label>
+                    <input type="hidden" name="userID" value="{{ model.user.userID }}">
+                    <p>
+                        <button class="btn btn-danger btn-sm" type="submit">
+                            Подтверждаю
+                        </button>
+                        <a class="btn btn-success btn-sm" href="/Users">Отмена</a>
+                    </p>
+                </form>
+            </h5>
+        </div>
+    </div>
+    {% endblock %}

@@ -8,38 +8,55 @@
 
     {% block body %}
     <div class="container">
-        <br>
-    <div class="row">
+    <br>
+    <div class="row" style="height: 300px;">
         {% for character in model.characters %}
             <div class="col-md-2 mb-3">
-                <div class="card h-100 border border-dark">
-                    <div class="card-body">
-                        <p>
-                            <a class="btn btn-dark" href="/Characters/{{ character.characterID }}">
-                                {{ character.name }}
-                            </a>
-                        </p>
-                        <p>ID: {{ character.characterID }}</p>
-                        <p>Класс: {{ character.characterClass }}</p>
-                        <p>Раса: {{ character.race }}</p>
-                        <p>Уровень: {{ character.level }}</p>
-                        <div class="container" style="text-center">
-                        {% if model.chooseFlag %}
+                <a href="/Characters/{{ character.characterID }}" class="text-decoration-none">
+                    <div class="card border border-dark d-flex flex-column align-items-stretch">
+                        <div class="card-header d-flex justify-content-center align-items-center text-white bg-dark" style="height: 50px;">
+                            <p style="margin: 0 auto;">
+                                <span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 13ch;">
+                                        {{ character.name }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-body" style="height: 175px;">
+                            <p class="text-start">
+                                <span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 13ch;">
+                                    Уровень: {{ character.level }}
+                                </span>
+                            </p>
+                            <p class="text-start">
+                                <span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 13ch;">
+                                    Класс: {{ character.characterClass }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-footer" style="height: 30px;">
+                            <p>
+                                <small class="text-muted">
+                                    ID: {{ character.characterID }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="container text-center">
+                            {% if model.chooseFlag %}
                             <form method="post">
                                 <input type="hidden" name="charID" value="{{ character.characterID }}">
                                 <p>
-                                    <button class="btn btn-danger btn-sm" type="submit">Выбрать</button>
+                                    <button class="btn btn-danger" type="submit">Выбрать</button>
                                 </p>
                             </form>
-                        {% endif %}
-                        </div>
+                            {% endif %}
                     </div>
-                </div>
-
+                </a>
             </div>
-            {% if loop.index % 5 == 0 and not loop.last and not loop.first %}
+            {% if not loop.first and not loop.last and loop.index % 5 == 0 %}
             </div>
-            <div class="row">
+            <div class="row" style="height: 300px;">
             {% endif %}
         {% endfor %}
     </div>

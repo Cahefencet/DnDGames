@@ -119,7 +119,7 @@ class KickUserFromCampaignHandler : HttpHandler {
     private fun getValidData(request: Request) : UserIDCampaignID? {
         val form = request.form()
 
-        val requestUserID = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
+        val requestUserID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
         val requestCampID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         val formUserID = form.findSingle("userID")?.toIntOrNull() ?: -2

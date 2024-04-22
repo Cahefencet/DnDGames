@@ -7,6 +7,7 @@ import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.routing.static
 import ru.uniyar.web.handlers.*
+import ru.uniyar.web.models.DeleteUserConfirmationPageVM
 
 fun router() =
     routes(
@@ -23,6 +24,8 @@ fun router() =
         "/Campaigns-new" bind POST to CampaignCreationHandler(),
         "/Users" bind GET to UsersHandler(),
         "/Users/{userID}" bind GET to UserHandler(),
+        "/Users/{userID}/delete" bind GET to DeleteUserConfirmationHandler(),
+        "/Users/{userID}/delete" bind POST to DeleteUserHandler(),
         "/Characters" bind GET to CharactersHandler(),
         "/Characters/{characterID}" bind GET to CharacterHandler(),
         "/Characters-new" bind GET to NewCharacterHandler(),

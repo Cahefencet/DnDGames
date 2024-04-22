@@ -4,14 +4,11 @@
         {{ model.campaign.campaignName }}
         {% endblock %}
 
-        {% block title %}
-        {{ model.campaign.campaignName }}
-        {% endblock %}
-
     {% block body %}
     <div class="container">
         <div>
             <h5>
+                <p>Название: {{ model.campaign.campaignName }}</p>
                 <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
                 <p>Айди кампании: {{ model.campaign.campaignID }}</p>
             </h5>
@@ -38,15 +35,8 @@
                         <div class="card row-hover pos-relative py-3 px-3 mb-3 border-dark border-top-0 border-right-0 border-bottom-0 rounded-0">
                             <div class="row align-items-center">
                                 <div class="col-md-8 mb-3 mb-sm-0">
-
                                     <p class="text-sm">
-                                        <strong>
-                                            Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}
-                                        </strong>
-                                    </p>
-
-                                    <p class="text-sm">
-                                            Номер поста по счёту в данной партии: {{ loop.index + 1 }}
+                                            Номер поста в данной партии: {{ loop.index + 1 }}
                                     </p>
 
                                     <p class="text-sm">
@@ -55,11 +45,17 @@
 
                                     <p>{{ post.text }}</p>
 
-                                    <a href="/Users/{{ post.authorID }}">
-                                        <p class="text-sm">
+                                    <p  class="text-sm">
+                                        <strong>
+                                            Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}
+                                        </strong>
+                                    </p>
+
+                                    <p class="text-sm">
+                                        <a href="/Users/{{ post.authorID }}">
                                             Автор
-                                        </p>
-                                    </a>
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -68,6 +64,8 @@
                         <a class="btn btn-primary btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
                         <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
                     </div>
+                    <br>
+                    <br>
                     <br>
                     <br>
                 {% endfor %}

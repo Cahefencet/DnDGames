@@ -2,7 +2,9 @@ package ru.uniyar.db
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.jetbrains.exposed.sql.transactions.transaction
+import ru.uniyar.auth.Role
 import java.sql.SQLException
 
 
@@ -297,12 +299,13 @@ private fun deleteAllPostsByCampaignID(id: Int) {
 
 fun deleteUserById(id: Int) {
     try {
-        deleteFromCampaignUsersByUserID(id)
-        return transaction {
-            Users.deleteWhere {
-                Users.userID eq id
+            deleteFromCampaignUsersByUserID(id)
+            return transaction {
+                Users.deleteWhere {
+                    (Users.userID eq id)
+                        .and(Users.userRole neq Role.ADMIN)
+                }
             }
-        }
     } catch (e: ClassNotFoundException) {
         throw e
     } catch (e: SQLException) {
@@ -629,6 +632,22 @@ fun fetchAllUsers(): List<User> {
                         row[Users.userRole],
                     )
             }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun countAdmins() : Int {
+    try {
+        return transaction {
+            Users
+                .selectAll()
+                .where {
+                    Users.userRole eq Role.ADMIN
+                }.count().toInt()
         }
     } catch (e: ClassNotFoundException) {
         throw e

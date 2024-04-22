@@ -14,9 +14,9 @@
             <thead class="table-dark">
                 <tr>
                     <th scope="col" style="width: 5%; text-align: center;">№</th>
-                    <th scope="col" style="width: 30%; text-align: center;">ID</th>
-                    <th scope="col" style="width: 30%; text-align: center;">Ник</th>
-                    <th scope="col" style="width: 30%; text-align: center;">Роль</th>
+                    <th scope="col" style="width: 10%; text-align: center;">ID</th>
+                    <th scope="col" style="width: 40%; text-align: center;">Ник</th>
+                    <th scope="col" style="width: 40%; text-align: center;">Роль</th>
                     <th class="table-danger" scope="col" style="width: 5%; text-align: center;">Удалить</th>
                 </tr>
             </thead>
@@ -24,18 +24,23 @@
                 {% for user in model.users %}
                     <tr style="text-align: center;">
                         <td>
-                                {{ loop.index + 1 }}
+                             {{ loop.index + 1 }}
+                        </td>
+                        <td>
+                             {{ user.userID }}
                         </td>
                         <td>
                             <a href="/Users/{{ user.userID }}">
-                                {{ user.userName }}
+                               {{ user.userName }}
                             </a>
                         </td>
                         <td>
-                            {{ user.userID }}
+                            {{ user.role }}
                         </td>
                         <td>
-                            {{ user.role }}
+                            <a class="btn btn-danger btn-sm" href="/Users/{{ user.userID }}/delete">
+                                ✖️
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
