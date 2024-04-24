@@ -26,6 +26,8 @@ fun router() =
         "/Users/{userID}" bind GET to UserHandler(),
         "/Users/{userID}/delete" bind GET to DeleteUserConfirmationHandler(),
         "/Users/{userID}/delete" bind POST to DeleteUserHandler(),
+        "/Registration" bind GET to RegistrationHandler(),
+        "/Registration" bind POST to UserCreationHandler(),
         "/Characters" bind GET to CharactersHandler(),
         "/Characters/{characterID}" bind GET to CharacterHandler(),
         "/Characters-new" bind GET to NewCharacterHandler(),

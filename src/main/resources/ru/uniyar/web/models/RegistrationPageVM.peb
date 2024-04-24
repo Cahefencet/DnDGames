@@ -1,0 +1,45 @@
+    {% extends "./Layout.peb" %}
+        {% block headTitle %}
+        Регистрация
+        {% endblock %}
+        {% block title %}
+        регистрация
+        {% endblock %}
+    {% block body %}
+    <form method="post">
+        <div>
+            <div class="mb-3">
+                <div class="container">
+                    <ul>
+                        <label for="inputName" class="form-label">Ник:</label>
+                        <input type="text" name="name" class="form-control" placeholder="KOBOLD_THE_DESTROYER" value="{{ model.user.name }}" required>
+                    </ul>
+                    <ul>
+                        <label for="inputPass" class="form-label">Пароль:</label>
+                        <input type="password" name="password" class="form-control" placeholder="12345" value="{{ model.user.password }}" required>
+                    </ul>
+                    <ul>
+                        <label for="inputPass" class="form-label">Подтвердите пароль:</label>
+                        <input type="password" name="passwordConfirmation" class="form-control" placeholder="12345" required>
+                    </ul>
+                    <button class="btn btn-success" type="submit">Подтвердить</button>
+
+                    {% if model.problem != null %}
+                        {% if model.problem %}
+                            <div class="container">
+                                <p></p>
+                                <p>Пользователь с таким именем уже существует!</p>
+                            </div>
+                            {% else %}
+                            <div class="container">
+                                <p></p>
+                                <p>Введённые данные некорректны!</p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endblock %}
+

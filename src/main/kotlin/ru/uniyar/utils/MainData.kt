@@ -16,7 +16,8 @@ import org.http4k.lens.string
 import org.http4k.routing.RoutingHttpHandler
 import ru.uniyar.auth.JwtTools
 import ru.uniyar.auth.Role
-import ru.uniyar.auth.Users
+import ru.uniyar.db.User
+import ru.uniyar.db.findUserByID
 import ru.uniyar.web.router
 import ru.uniyar.web.templates.ContextAwarePebbleTemplates
 import ru.uniyar.web.templates.ContextAwareViewRender
@@ -25,9 +26,9 @@ data class UserStruct(val id: Int, val name: String, val role: Role)
 
 val contexts = RequestContexts()
 val userLens: RequestContextLens<UserStruct?> = RequestContextKey.optional(contexts, "user-struct")
+val roleLens: RequestContextLens<Role> = RequestContextKey.required(contexts, "user-role")
 val renderer = ContextAwarePebbleTemplates().hotReload("src/main/resources")
 val contextAwareViewRender = ContextAwareViewRender.withContentType(renderer, ContentType.TEXT_HTML)
-val roleLens: RequestContextLens<Role> = RequestContextKey.required(contexts, "user-role")
 val htmlView =
     contextAwareViewRender
         .associateContextLens("userStruct", userLens)
@@ -40,16 +41,25 @@ val jwtTools =
         7,
     )
 
-fun getApp(users: Users): RoutingHttpHandler {
+fun getUserStructByID(id: Int) : UserStruct? {
+    val user = findUserByID(id) ?: return null
+    return UserStruct(user.userID, user.userName, user.role)
+}
+
+fun getApp() : RoutingHttpHandler {
     fun authFilter(key: RequestContextLens<UserStruct?>) =
         Filter {
                 next: HttpHandler ->
             exec@{
                     request ->
                 val cookie = request.cookie("auth")
-                val token = cookie?.value ?: return@exec next(request)
-                val id = jwtTools.verifyToken(token) ?: return@exec next(request)
-                val userStruct = users.getUserStructById(id.toInt()) ?: return@exec next(request)
+                val token = cookie?.value
+                    ?: return@exec next(request)
+                val id = jwtTools.verifyToken(token)
+                    ?.toIntOrNull()
+                    ?: return@exec next(request)
+                val userStruct = getUserStructByID(id)
+                    ?: return@exec next(request)
                 next(request.with(key of userStruct))
             }
         }
@@ -60,7 +70,8 @@ fun getApp(users: Users): RoutingHttpHandler {
     ) = Filter {
             next: HttpHandler ->
         exec@{ request ->
-            val user = key(request) ?: return@exec next(request.with(roleLens of Role.ANONYMOUS))
+            val user = key(request)
+                ?: return@exec next(request.with(roleLens of Role.ANONYMOUS))
             val role = user.role
             next(request.with(roleLens of role))
         }
