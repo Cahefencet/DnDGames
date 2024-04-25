@@ -7,12 +7,20 @@ import ru.uniyar.db.fetchAllCampaigns
 import ru.uniyar.db.findCampIDByOwnerAndName
 import ru.uniyar.db.insertCampaign
 import ru.uniyar.utils.htmlView
+import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.CampaignsPageVM
 import ru.uniyar.web.models.NewCampaignPageVM
 
 class CampaignsHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val model = CampaignsPageVM(fetchAllCampaigns())
+
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        val model = CampaignsPageVM(
+            fetchAllCampaigns(),
+            userStruct
+            )
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

@@ -7,7 +7,6 @@ import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.routing.static
 import ru.uniyar.web.handlers.*
-import ru.uniyar.web.models.DeleteUserConfirmationPageVM
 
 fun router() =
     routes(
@@ -28,6 +27,9 @@ fun router() =
         "/Users/{userID}/delete" bind POST to DeleteUserHandler(),
         "/Registration" bind GET to RegistrationHandler(),
         "/Registration" bind POST to UserCreationHandler(),
+        "/Login" bind GET to LoginFormHandler(),
+        "/Login" bind POST to LoginHandler(),
+        "/Logout" bind GET to LogoutHandler(),
         "/Characters" bind GET to CharactersHandler(),
         "/Characters/{characterID}" bind GET to CharacterHandler(),
         "/Characters-new" bind GET to NewCharacterHandler(),

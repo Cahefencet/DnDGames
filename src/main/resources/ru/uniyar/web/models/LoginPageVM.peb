@@ -1,0 +1,34 @@
+    {% extends "./Layout.peb" %}
+        {% block headTitle %}
+        Вход
+        {% endblock %}
+        {% block title %}
+        Ввод данных для входа
+        {% endblock %}
+    {% block body %}
+    <form method="post">
+        <div>
+            <div class="mb-3">
+                <div class="container-sm">
+                    <ul>
+                        <label for="inputName" class="form-label">Ваш ник:</label>
+                        <input type="text" name="name" class="form-control" placeholder="GOBLIN_THE_SLAYER" value="{{ model.user.userName }}" required>
+                    </ul>
+                    <ul>
+                        <label for="inputName" class="form-label">Пароль:</label>
+                        <input type="password" name="password" class="form-control" placeholder="12345" value="{{ model.user.password }}" required>
+                    </ul>
+                    <button class="btn btn-success" type="submit">Подтвердить</button>
+
+                    {% if model.user != null %}
+                        <div class="container-sm">
+                            <p></p>
+                            <p>Имя пользователя <em>или</em> пароль были введены неверно</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endblock %}
+

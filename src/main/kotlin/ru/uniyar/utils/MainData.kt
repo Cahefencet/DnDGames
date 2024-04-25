@@ -22,7 +22,11 @@ import ru.uniyar.web.router
 import ru.uniyar.web.templates.ContextAwarePebbleTemplates
 import ru.uniyar.web.templates.ContextAwareViewRender
 
-data class UserStruct(val id: Int, val name: String, val role: Role)
+data class UserStruct(
+    val id: Int,
+    val name: String,
+    val role: Role
+)
 
 val contexts = RequestContexts()
 val userLens: RequestContextLens<UserStruct?> = RequestContextKey.optional(contexts, "user-struct")

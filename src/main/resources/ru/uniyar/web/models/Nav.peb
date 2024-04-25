@@ -19,6 +19,17 @@
                             <a class="navbar-brand" href="/Users">Пользователи</a>
                         </li>
                     </ul>
+                    {% if model.userStruct != null %}
+                        <div align="right">
+                            <p>{{ model.userStruct.name }}
+                                <a class="navbar-brand" href="/Logout">выход</a></p>
+                        </div>
+                        {% else %}
+                        <div align="right">
+                            <a class="navbar-brand" href="/Login">ВХОД</a>
+                            <a class="navbar-brand" href="/Registration">РЕГИСТРАЦИЯ</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>
