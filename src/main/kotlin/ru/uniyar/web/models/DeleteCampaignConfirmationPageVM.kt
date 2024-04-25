@@ -6,5 +6,5 @@ import ru.uniyar.utils.UserStruct
 
 class DeleteCampaignConfirmationPageVM(
     val campaign: Campaign,
-    val userStruct: UserStruct?
+    val userStruct: UserStruct?,
 ) : ViewModel

@@ -7,5 +7,5 @@ import ru.uniyar.utils.UserStruct
 class CharactersPageVM(
     val characters: List<Character>,
     val chooseFlag : Boolean,
-    val userStruct: UserStruct,
+    val userStruct: UserStruct?,
 ) : ViewModel

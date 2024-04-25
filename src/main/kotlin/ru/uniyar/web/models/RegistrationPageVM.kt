@@ -8,5 +8,5 @@ import ru.uniyar.utils.UserStruct
 class RegistrationPageVM(
     val user: User?,
     val problem: Boolean?,
-    val userStruct: UserStruct?
+    val userStruct: UserStruct?,
 ) : ViewModel
