@@ -4,6 +4,7 @@ import org.http4k.core.*
 import org.http4k.core.body.form
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
+import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.DeletePostConfirmationPageVM
 import ru.uniyar.web.models.PostPageVM
 import java.time.LocalDate
@@ -11,6 +12,8 @@ import java.time.LocalDateTime
 
 class NewPostHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
@@ -18,13 +21,18 @@ class NewPostHandler : HttpHandler {
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val model = PostPageVM(campaign, null, null)
+        //todo проверка на отношение usera к кампании, иначе создать пост нельзя
+
+
+        val model = PostPageVM(campaign, null, null, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
 
 class PostCreationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
@@ -40,11 +48,12 @@ class PostCreationHandler : HttpHandler {
         val visibility = Visibility.valueOf(valid[1])
         val date = LocalDate.parse(valid[0])
 
-        //'post author' will be soon
+        //todo проверка на отношение usera к кампании, иначе создать пост нельзя
+
         val post = CampaignPost(
             -1,
             campaignID,
-            3,
+            userStruct.id,
             text,
             visibility,
             date,
@@ -83,6 +92,9 @@ class PostCreationHandler : HttpHandler {
 
 class EditPostConfirmationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         val campaign = findCampaignByID(campID)
@@ -96,18 +108,21 @@ class EditPostConfirmationHandler : HttpHandler {
         val author = findUserByID(post.authorID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        // coming soon
-        val userID = 3
-        if (author.userID != userID)
+        if (author.userID != userStruct.id)
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        val model = PostPageVM(campaign, post, post.text)
+        //todo проверка на отношение к кампании
+
+        val model = PostPageVM(campaign, post, post.text, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
 
 class EditPostHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         findCampaignByID(campID)
@@ -121,10 +136,8 @@ class EditPostHandler : HttpHandler {
         val author = findUserByID(post.authorID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        // coming soon
-        val userID = 3
-
-        if (userID != author.userID)
+        //todo проверка на отношение к кампании
+        if (userStruct.id != author.userID)
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
         val form = request.form()
@@ -164,6 +177,9 @@ class EditPostHandler : HttpHandler {
 
 class DeletePostConfirmationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val postID = lensOrNull(postIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
@@ -173,14 +189,18 @@ class DeletePostConfirmationHandler : HttpHandler {
         val author = findUserByID(post.authorID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
+        //todo проверка на отношение usera к кампании
 
-        val model = DeletePostConfirmationPageVM(post, author, post.text)
+        val model = DeletePostConfirmationPageVM(post, author, post.text, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
 
 class DeletePostHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val requestPostID = lensOrNull(postIdLens, request)?.toIntOrNull() ?: -1
 
         val form = request.form()
@@ -193,12 +213,11 @@ class DeletePostHandler : HttpHandler {
         val post = findPostByID(formPostID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        // coming soon
-        val userID = 3
-
         val campaignID = findCampIDByPostID(formPostID) ?: -1
 
-        if (post.authorID == userID)
+        //todo проверка на отношение к кампании
+
+        if (post.authorID == userStruct.id)
             deletePostByID(formPostID)
 
         return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}")

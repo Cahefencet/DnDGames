@@ -2,5 +2,9 @@ package ru.uniyar.web.models
 
 import org.http4k.template.ViewModel
 import ru.uniyar.db.User
+import ru.uniyar.utils.UserStruct
 
-class UsersPageVM(val users: List<User>) : ViewModel
+class UsersPageVM(
+    val users: List<User>,
+    val userStruct: UserStruct?
+) : ViewModel

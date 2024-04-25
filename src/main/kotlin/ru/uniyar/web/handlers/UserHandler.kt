@@ -22,6 +22,8 @@ import java.time.ZoneOffset
 
 class UserHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/")
@@ -29,7 +31,7 @@ class UserHandler : HttpHandler {
         val user = findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location","/")
 
-        val model = UserPageVM(user)
+        val model = UserPageVM(user, userStruct)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -38,7 +40,7 @@ class UserHandler : HttpHandler {
 class RegistrationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
-        val model = RegistrationPageVM(null, null, userStruct?.name, userStruct?.role)
+        val model = RegistrationPageVM(null, null, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
@@ -52,12 +54,12 @@ class UserCreationHandler : HttpHandler {
         val conf = form.findSingle("passwordConfirmation") ?: ""
         val wrongData = User(-1, "wrong data", "1234", Role.ANONYMOUS)
         val userStruct = userLens(request)
-        var model = RegistrationPageVM(wrongData, false, userStruct?.name, userStruct?.role)
+        var model = RegistrationPageVM(wrongData, false, userStruct)
 
 
         if (valid(name, pass, conf)) {
             if (findUserByName(name) != null){
-                model = RegistrationPageVM(wrongData, true, userStruct?.name, userStruct?.role)
+                model = RegistrationPageVM(wrongData, true, userStruct)
                 return Response(Status.OK).with(htmlView(request) of model)
             }
             insertUser(User(-1, name, Hasher.hashPassword(pass), Role.USER))
@@ -128,8 +130,6 @@ class LoginHandler : HttpHandler {
 
 class LogoutHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        return Response(Status.FOUND)
-            .invalidateCookie("auth")
-            .header("Location", "/")
+        return Response(Status.FOUND).invalidateCookie("auth").header("Location", "/")
     }
 }

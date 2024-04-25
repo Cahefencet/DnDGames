@@ -8,12 +8,15 @@ import ru.uniyar.db.editCharacter
 import ru.uniyar.db.findCharacterByID
 import ru.uniyar.db.findUserByID
 import ru.uniyar.utils.htmlView
+import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.CharacterPageVM
 import ru.uniyar.web.models.DeleteCharacterConfirmationPageVM
 import ru.uniyar.web.models.EditCharacterPageVM
 
 class CharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val characterID = lensOrNull(characterIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location", "/Characters")
@@ -24,7 +27,7 @@ class CharacterHandler : HttpHandler {
         val owner = findUserByID(character.userID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
-        val model = CharacterPageVM(character, owner)
+        val model = CharacterPageVM(character, owner, userStruct)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -32,6 +35,8 @@ class CharacterHandler : HttpHandler {
 
 class DeleteCharacterConfirmationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val characterID = lensOrNull(characterIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location", "/Characters")
@@ -39,7 +44,7 @@ class DeleteCharacterConfirmationHandler : HttpHandler {
         val character = findCharacterByID(characterID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
-        val model = DeleteCharacterConfirmationPageVM(character)
+        val model = DeleteCharacterConfirmationPageVM(character, userStruct)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -47,6 +52,8 @@ class DeleteCharacterConfirmationHandler : HttpHandler {
 
 class DeleteCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val requestCharacterID = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
 
@@ -60,10 +67,7 @@ class DeleteCharacterHandler : HttpHandler {
         val character = findCharacterByID(formCharacterID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
-        // coming soon
-        val userID = 5
-
-        if (character.userID == userID)
+        if (character.userID == userStruct.id)
             deleteCharacterByID(formCharacterID)
 
         return Response(Status.FOUND).header("Location", "/Characters")
@@ -72,24 +76,25 @@ class DeleteCharacterHandler : HttpHandler {
 
 class EditCharacterConfirmationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val charID = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
         val character = findCharacterByID(charID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
-        // coming soon
-        val userID = 5
-
-        if (userID != character.userID)
+        if (userStruct.id != character.userID)
             return Response(Status.FOUND).header("Location", "/Characters/${charID}")
 
-        val model = EditCharacterPageVM(character)
+        val model = EditCharacterPageVM(character, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
 
 class EditCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
         val requestCharId = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
         val form = request.form()
@@ -107,10 +112,7 @@ class EditCharacterHandler : HttpHandler {
         val newRace = form.findSingle("newRace") ?: ""
         val newLevel = form.findSingle("newLevel")?.toIntOrNull() ?: 0
 
-        // coming soon
-        val userID = 5
-
-        if (character.userID != userID
+        if (character.userID != userStruct.id
             || newRace.length > 50
             || newName.length > 100
             || newClass.length > 100

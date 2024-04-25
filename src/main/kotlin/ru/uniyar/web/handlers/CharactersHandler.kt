@@ -5,40 +5,40 @@ import org.http4k.core.body.form
 import ru.uniyar.auth.Role
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
+import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.CharactersPageVM
 import ru.uniyar.web.models.NewCharacterPageVM
 
 class CharactersHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
 
-        val user = User(
-            3,
-            "example",
-            "example",
-            Role.MODERATOR
-        )
+        if (userStruct.role == Role.MODERATOR){
+            val model = CharactersPageVM(fetchAllCharacters(), false, userStruct)
+            return Response(Status.OK).with(htmlView(request) of model)
+        }
 
-        if (user.role == Role.MODERATOR)
-            return Response(Status.OK)
-                .with(htmlView(request)
-                        of CharactersPageVM(fetchAllCharacters(), false))
-
-        return Response(Status.OK)
-            .with(htmlView(request)
-                    of CharactersPageVM(findCharactersByUserID(user.userID), false))
+        val characters = findCharactersByUserID(userStruct.id)
+        val model = CharactersPageVM(characters, false, userStruct)
+        return Response(Status.OK).with(htmlView(request) of model)
     }
 }
 
 class NewCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val model = NewCharacterPageVM()
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+        val model = NewCharacterPageVM(userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
 
 class CharacterCreationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val valid = getValidData(request)
 
         if (valid.size < 4)
@@ -49,11 +49,10 @@ class CharacterCreationHandler : HttpHandler {
         val race = valid[2]
         val level = valid[3].toInt()
 
-        //'user author' will be soon
         val character =
             Character(
                 -1,
-                5,
+                userStruct.id,
                 name,
                 characterClass,
                 race,
@@ -95,6 +94,9 @@ class CharacterCreationHandler : HttpHandler {
 
 class ShowCharactersToChooseHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
 
@@ -104,7 +106,7 @@ class ShowCharactersToChooseHandler : HttpHandler {
         findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}/Users")
 
-        val model = CharactersPageVM(findCharactersByUserID(userID), chooseFlag = true)
+        val model = CharactersPageVM(findCharactersByUserID(userID), chooseFlag = true, userStruct)
 
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -112,8 +114,14 @@ class ShowCharactersToChooseHandler : HttpHandler {
 
 class ChooseCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
+
+        if (userID != userStruct.id)
+            return Response(Status.FOUND).header("Location", "/")
 
         val charID = request.form().findSingle("charID")?.toIntOrNull() ?: -1
 
