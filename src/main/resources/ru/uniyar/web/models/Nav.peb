@@ -1,10 +1,12 @@
 <div>
     <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-dark mb-3" data-bs-theme="dark">
+            <div class="container">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span> </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+                    меню
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="navbar-brand" href="/">Главная</a>
@@ -19,18 +21,38 @@
                             <a class="navbar-brand" href="/Users">Пользователи</a>
                         </li>
                     </ul>
-                    {% if model.userStruct != null %}
-                        <div align="right">
-                            <p>{{ model.userStruct.name }}
-                                <a class="navbar-brand" href="/Logout">выход</a></p>
-                        </div>
-                        {% else %}
-                        <div align="right">
-                            <a class="navbar-brand" href="/Login">ВХОД</a>
-                            <a class="navbar-brand" href="/Registration">РЕГИСТРАЦИЯ</a>
-                        </div>
-                    {% endif %}
+                    <div class="nav-item dropdown" style="color:#ffffff;">
+                        <a class="nav-link dropdown-toggle text-light" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Профиль
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if model.userStruct != null %}
+                                <li>
+                                    <a class="dropdown-item">
+                                            {{ model.userStruct.name }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/Logout">
+                                        выход
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a class="dropdown-item" href="/Login">
+                                        ВХОД
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/Registration">
+                                        РЕГИСТРАЦИЯ
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
+            </div>
             </div>
         </nav>
     </header>
