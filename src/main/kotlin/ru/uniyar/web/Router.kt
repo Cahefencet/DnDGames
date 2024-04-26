@@ -48,5 +48,8 @@ fun router() =
         "/Kick/{campaignID}/{userID}" bind POST to KickUserFromCampaignHandler(),
         "/Choose/{campaignID}/{userID}" bind GET to ShowCharactersToChooseHandler(),
         "/Choose/{campaignID}/{userID}" bind POST to ChooseCharacterHandler(),
+        "/Administrators" bind GET to AdministrationHandler(),
+        "/Administrators/new" bind GET to AdminRegistrationHandler(),
+        "/Administrators/new" bind POST to AdminCreationHandler(),
         static(ResourceLoader.Classpath("ru/uniyar/public")),
     )

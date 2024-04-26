@@ -3,43 +3,57 @@
         Регистрация
         {% endblock %}
         {% block title %}
-        регистрация
+            {% if model.adminFlag %}
+                создать администратора
+            {% else %}
+            регистрация
+            {% endif %}
         {% endblock %}
     {% block body %}
     <form method="post">
         <div>
             <div class="mb-3">
-                <div class="container">
+                <div class="container-sm">
                     <ul>
                         <label for="inputName" class="form-label">Ник:</label>
                         <input type="text" name="name" class="form-control" placeholder="KOBOLD_THE_DESTROYER" value="{{ model.user.name }}" required>
                     </ul>
                     <ul>
                         <label for="inputPass" class="form-label">Пароль:</label>
-                        <input type="password" name="password" class="form-control" placeholder="12345" value="{{ model.user.password }}" required>
+                        <input type="password" name="password" class="form-control" placeholder="12345" required>
                     </ul>
                     <ul>
                         <label for="inputPass" class="form-label">Подтвердите пароль:</label>
                         <input type="password" name="passwordConfirmation" class="form-control" placeholder="12345" required>
                     </ul>
-                    <button class="btn btn-success" type="submit">Подтвердить</button>
+
+                    {% if model.adminFlag %}
+                        <ul>
+                            <select class="custom-select mr-sm-2" id="select" name="role">
+                                <option value="REDACTOR" selected>редактор кампаний</option>
+                                <option value="MODERATOR">модератор персонажей</option>
+                                <option value="ADMIN">админ</option>
+                            </select>
+                        </ul>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-success" type="submit">Подтвердить</button>
+                    </div>
 
                     {% if model.problem != null %}
-                        {% if model.problem %}
-                            <div class="container">
+                        <div class="container">
+                                {% if model.problem %}
                                 <p></p>
                                 <p>Пользователь с таким именем уже существует!</p>
-                            </div>
-                            {% else %}
-                            <div class="container">
+                                {% else %}
                                 <p></p>
                                 <p>Введённые данные некорректны!</p>
-                            </div>
-                        {% endif %}
+                                {% endif %}
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </form>
     {% endblock %}
-

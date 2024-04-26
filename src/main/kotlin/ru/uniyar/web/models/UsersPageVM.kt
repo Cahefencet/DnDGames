@@ -6,5 +6,6 @@ import ru.uniyar.utils.UserStruct
 
 class UsersPageVM(
     val users: List<User>,
+    val adminFlag: Boolean,
     val userStruct: UserStruct?,
 ) : ViewModel

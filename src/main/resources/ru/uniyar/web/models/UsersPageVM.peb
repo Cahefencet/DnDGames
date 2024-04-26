@@ -3,7 +3,11 @@
         {% block headTitle %}Список пользователей{% endblock %}
 
         {% block title %}
-        Список пользователей
+            {% if model.adminFlag %}
+                администрация сайта
+            {% else %}
+                Список пользователей
+            {% endif %}
         {% endblock %}
 
     {% block body %}
@@ -46,5 +50,12 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% if model.adminFlag %}
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-success" href="/Administrators/new">
+                    добавить
+                </a>
+            </div>
+        {% endif %}
     </div>
     {% endblock %}

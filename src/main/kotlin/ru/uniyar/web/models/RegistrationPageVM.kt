@@ -9,4 +9,5 @@ class RegistrationPageVM(
     val user: User?,
     val problem: Boolean?,
     val userStruct: UserStruct?,
+    val adminFlag: Boolean,
 ) : ViewModel

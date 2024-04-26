@@ -303,7 +303,6 @@ fun deleteUserById(id: Int) {
             return transaction {
                 Users.deleteWhere {
                     (Users.userID eq id)
-                        .and(Users.userRole neq Role.ADMIN)
                 }
             }
     } catch (e: ClassNotFoundException) {
@@ -623,6 +622,9 @@ fun fetchAllUsers(): List<User> {
         return transaction {
             Users
                 .selectAll()
+                .where {
+                    Users.userRole eq Role.USER
+                }
                 .map {
                     row ->
                     User(
@@ -675,6 +677,31 @@ fun fetchAllPlayersByCampaignID(campID: Int) : MutableList<CampaignUser> {
                  )
              }.toMutableList()
      }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun fetchAllAdministrators() : MutableList<User> {
+    try {
+        return transaction {
+            Users
+                .selectAll()
+                .where {
+                    (Users.userRole eq Role.ADMIN)
+                        .or(Users.userRole eq Role.MODERATOR)
+                        .or(Users.userRole eq Role.REDACTOR)
+                }.map { row ->
+                    User(
+                        row[Users.userID],
+                        row[Users.username],
+                        row[Users.password],
+                        row[Users.userRole],
+                    )
+                }.toMutableList()
+        }
     } catch (e: ClassNotFoundException) {
         throw e
     } catch (e: SQLException) {

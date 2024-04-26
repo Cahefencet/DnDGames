@@ -20,6 +20,9 @@
                         <li class="nav-item">
                             <a class="navbar-brand" href="/Users">Пользователи</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand" href="/Administrators">Администрация</a>
+                        </li>
                     </ul>
                     <div class="nav-item dropdown" style="color:#ffffff;">
                         <a class="nav-link dropdown-toggle text-light" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">

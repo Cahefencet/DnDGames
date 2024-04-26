@@ -4,6 +4,7 @@ import org.http4k.core.*
 import org.http4k.core.body.form
 import ru.uniyar.auth.Role
 import ru.uniyar.db.deleteUserById
+import ru.uniyar.db.fetchAllAdministrators
 import ru.uniyar.db.fetchAllUsers
 import ru.uniyar.db.findUserByID
 import ru.uniyar.utils.htmlView
@@ -20,7 +21,22 @@ class UsersHandler : HttpHandler {
             return Response(Status.FOUND).header("Location", "/")
 
         val users = fetchAllUsers()
-        val model = UsersPageVM(users, userStruct)
+        val model = UsersPageVM(users, false, userStruct)
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class AdministrationHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageUsers))
+            return Response(Status.FOUND).header("Location", "/")
+
+        val administrators = fetchAllAdministrators()
+
+        val model = UsersPageVM(administrators, true, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

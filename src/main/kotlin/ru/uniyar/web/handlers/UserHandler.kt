@@ -43,8 +43,70 @@ class UserHandler : HttpHandler {
 class RegistrationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
-        val model = RegistrationPageVM(null, null, userStruct)
+        val model = RegistrationPageVM(null, null, userStruct, false)
         return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class AdminRegistrationHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageUsers))
+            return Response(Status.FOUND).header("Location", "/")
+
+        val model = RegistrationPageVM(null, null, userStruct, true)
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class AdminCreationHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val form = request.form()
+
+        val name = form.findSingle("name") ?: ""
+        val pass = form.findSingle("password") ?: ""
+        val conf = form.findSingle("passwordConfirmation") ?: ""
+        val role = form.findSingle("role") ?: ""
+
+        val wrongData = User(-1, "wrong data", "1234", Role.ANONYMOUS)
+
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageUsers))
+            return Response(Status.FOUND).header("Location", "/")
+
+        var model = RegistrationPageVM(wrongData, false, userStruct, true)
+
+        if (valid(name, pass, conf, role)) {
+            if (findUserByName(name) != null){
+                model = RegistrationPageVM(wrongData, true, userStruct, true)
+                return Response(Status.OK).with(htmlView(request) of model)
+            }
+            insertUser(User(-1, name, Hasher.hashPassword(pass), Role.valueOf(role)))
+            return Response(Status.FOUND).header("Location", "/Login")
+        }
+
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+
+    fun valid(
+        name: String,
+        pass: String,
+        conf: String,
+        role: String,
+    ): Boolean {
+        if (name.isEmpty() || pass.isEmpty() || conf.isEmpty() || role.isEmpty())
+            return false
+        try {
+            Role.valueOf(role)
+        } catch (e: IllegalArgumentException) {
+            return false
+        }
+
+        return pass == conf
     }
 }
 
@@ -57,12 +119,12 @@ class UserCreationHandler : HttpHandler {
         val conf = form.findSingle("passwordConfirmation") ?: ""
         val wrongData = User(-1, "wrong data", "1234", Role.ANONYMOUS)
         val userStruct = userLens(request)
-        var model = RegistrationPageVM(wrongData, false, userStruct)
+        var model = RegistrationPageVM(wrongData, false, userStruct, false)
 
 
         if (valid(name, pass, conf)) {
             if (findUserByName(name) != null){
-                model = RegistrationPageVM(wrongData, true, userStruct)
+                model = RegistrationPageVM(wrongData, true, userStruct, false)
                 return Response(Status.OK).with(htmlView(request) of model)
             }
             insertUser(User(-1, name, Hasher.hashPassword(pass), Role.USER))
