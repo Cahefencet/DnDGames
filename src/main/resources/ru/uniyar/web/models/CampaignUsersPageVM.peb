@@ -39,14 +39,16 @@
                                         {{ player.user.userName }}
                                 </a>
                             </td>
-                            {% if player.character == null %}
+                            {% if (player.character == null) %}
                                 <td class="table-danger">
-                                    <a class="btn btn-secondary"
-                                       href="/Choose/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
-                                        Выбрать персонажа
-                                    </a>
+                                    {% if model.userStruct.role.manageOwnCampaigns %}
+                                        <a class="btn btn-secondary"
+                                           href="/Choose/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
+                                            Выбрать персонажа
+                                        </a>
+                                    {% endif %}
                                 </td>
-                                {% else %}
+                            {% else %}
                                 <td>{{ player.character.name }}</td>
                             {% endif %}
                             {% if player.character == null %}

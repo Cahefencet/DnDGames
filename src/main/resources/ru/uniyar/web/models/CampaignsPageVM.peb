@@ -29,19 +29,20 @@
             {% endfor %}
         </div>
         <br>
-        <div class="container">
-            <h4>
-                <a class="btn btn-dark" href="/Campaigns-new">
-                    Создать новую кампанию
-                </a>
-            </h4>
-        </div>
+        {% if model.userStruct.role.manageCampaigns %}
+            <div class="container">
+                <h4>
+                    <a class="btn btn-dark" href="/Campaigns-new">
+                        Создать новую кампанию
+                    </a>
+                </h4>
+            </div>
+        {% endif %}
 
     </div>
     {% else %}
     <div class="container container-sm">
         <div class="d-flex justify-content-center">
-            <p>Потерялись?</p>
             <p>
                 <a class="btn btn-success" href="/">
                     вернуться
