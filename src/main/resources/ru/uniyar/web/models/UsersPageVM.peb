@@ -11,7 +11,7 @@
         {% endblock %}
 
     {% block body %}
-
+    {% if model.userStruct.role.manageUsers %}
     <br>
     <div class="container-sm" style="margin: 0 auto; width: 60%;">
         <table class="table table-striped table-hover table-bordered border border-dark">
@@ -58,4 +58,16 @@
             </div>
         {% endif %}
     </div>
+    {% else %}
+    <div class="container container-sm">
+        <div class="d-flex justify-content-center">
+            <p>Потерялись?</p>
+            <p>
+                <a class="btn btn-success" href="/">
+                    вернуться
+                </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
     {% endblock %}

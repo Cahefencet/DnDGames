@@ -11,18 +11,28 @@
                         <li class="nav-item">
                             <a class="navbar-brand" href="/">Главная</a>
                         </li>
+
+                        {% if model.userStruct.role.manageAllCampaigns or model.userStruct.role.manageOwnCampaigns %}
                         <li class="nav-item">
                             <a class="navbar-brand" href="/Campaigns">Кампании</a>
                         </li>
+                        {% endif %}
+
+                        {% if model.userStruct.role.manageOwnCharacters or model.userStruct.role.manageAllCharacters %}
                         <li class="nav-item">
                             <a class="navbar-brand" href="/Characters">Персонажи</a>
                         </li>
+                        {% endif %}
+
+                        {% if model.userStruct.role.manageUsers %}
                         <li class="nav-item">
                             <a class="navbar-brand" href="/Users">Пользователи</a>
                         </li>
                         <li class="nav-item">
                             <a class="navbar-brand" href="/Administrators">Администрация</a>
                         </li>
+                        {% endif %}
+
                     </ul>
                     <div class="nav-item dropdown" style="color:#ffffff;">
                         <a class="nav-link dropdown-toggle text-light" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">

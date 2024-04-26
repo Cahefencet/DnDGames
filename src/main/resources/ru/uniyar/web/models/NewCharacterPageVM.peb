@@ -5,8 +5,9 @@
 {% block title %} Новый персонаж {% endblock %}
 
 {% block body %}
-<form class="text-center mt-5" method="POST">
+{% if model.userStruct.role.manageOwnCharacters %}
 
+<form class="text-center mt-5" method="POST">
     Имя: <br>
     <input type="text" name="name" placeholder="Имя" required> <br> <br>
 
@@ -21,5 +22,18 @@
 
     <button type="submit" class="btn btn-primary">Принять</button>
 </form>
+
+{% else %}
+<div class="container container-sm">
+    <div class="d-flex justify-content-center">
+        <p>Потерялись?</p>
+        <p>
+            <a class="btn btn-success" href="/">
+                вернуться
+            </a>
+        </p>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 

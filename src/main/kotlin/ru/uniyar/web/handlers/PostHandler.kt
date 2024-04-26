@@ -15,7 +15,7 @@ class NewPostHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
             return Response(Status.FOUND).header("Location", "/")
 
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
@@ -125,6 +125,7 @@ class EditPostConfirmationHandler : HttpHandler {
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
         if (author.userID != userStruct.id)
+            if (!(userStruct.role.manageAllCampaigns))
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
         val model = PostPageVM(campaign, post, post.text, userStruct)

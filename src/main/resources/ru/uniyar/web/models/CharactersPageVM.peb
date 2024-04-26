@@ -7,6 +7,7 @@
         {% endblock %}
 
     {% block body %}
+    {% if model.userStruct.role.manageOwnCharacters or model.userStruct.role.manageAllCharacters %}
     <div class="container">
     <br>
     <div class="row" style="height: 300px;">
@@ -71,4 +72,16 @@
             </div>
         {% endif %}
     </div>
+    {% else %}
+    <div class="container container-sm">
+        <div class="d-flex justify-content-center">
+            <p>Потерялись?</p>
+            <p>
+                <a class="btn btn-success" href="/">
+                    вернуться
+                </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
     {% endblock %}

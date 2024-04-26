@@ -5,71 +5,84 @@
         {% endblock %}
 
     {% block body %}
-    <div class="container">
-        <div>
-            <h5>
-                <p>Название: {{ model.campaign.campaignName }}</p>
-                <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
-                <p>Айди кампании: {{ model.campaign.campaignID }}</p>
-            </h5>
-        </div>
+        {% if model.userStruct.role.manageOwnCampaigns or model.userStruct.role.manageAllCampaigns %}
+        <div class="container">
+            <div>
+                <h5>
+                    <p>Название: {{ model.campaign.campaignName }}</p>
+                    <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
+                    <p>Айди кампании: {{ model.campaign.campaignID }}</p>
+                </h5>
+            </div>
 
-        <br>
-        <br>
+            <br>
+            <br>
 
-        <div>
-            <h4 class="text-center">
-                <div class="btn-group" role="group">
-                    <a class="btn btn-dark" href="/Post/{{ model.campaign.campaignID }}">Добавить запись</a>
-                    <a class="btn btn-primary" href="/Campaigns/{{ model.campaign.campaignID }}/edit">Изменить название</a>
-                    <a class="btn btn-info" href="/Campaigns/{{ model.campaign.campaignID }}/Users">Список игроков</a>
-                    <a class="btn btn-danger" href="/Campaigns/{{ model.campaign.campaignID }}/delete">Удалить</a>
-                </div>
-            </h4>
-        </div>
+            <div>
+                <h4 class="text-center">
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-dark" href="/Post/{{ model.campaign.campaignID }}">Добавить запись</a>
+                        <a class="btn btn-primary" href="/Campaigns/{{ model.campaign.campaignID }}/edit">Изменить название</a>
+                        <a class="btn btn-info" href="/Campaigns/{{ model.campaign.campaignID }}/Users">Список игроков</a>
+                        <a class="btn btn-danger" href="/Campaigns/{{ model.campaign.campaignID }}/delete">Удалить</a>
+                    </div>
+                </h4>
+            </div>
 
-        <br>
-        <br>
-                {% for post in model.posts %}
-                    <div class="row">
-                        <div class="card row-hover pos-relative py-3 px-3 mb-3 border-dark border-top-0 border-right-0 border-bottom-0 rounded-0">
-                            <div class="row align-items-center">
-                                <div class="col-md-8 mb-3 mb-sm-0">
-                                    <p class="text-sm">
-                                            Номер поста в данной партии: {{ loop.index + 1 }}
-                                    </p>
+            <br>
+            <br>
+            {% for post in model.posts %}
+                <div class="row">
+                    <div class="card row-hover pos-relative py-3 px-3 mb-3 border-dark border-top-0 border-right-0 border-bottom-0 rounded-0">
+                        <div class="row align-items-center">
+                            <div class="col-md-8 mb-3 mb-sm-0">
+                                <p class="text-sm">
+                                    Номер поста в данной партии: {{ loop.index + 1 }}
+                                </p>
 
-                                    <p class="text-sm">
-                                            Дата публикации: {{ post.postDate | date("dd.MM.yyyy HH:mm:ss") }}
-                                    </p>
+                                <p class="text-sm">
+                                    Дата публикации: {{ post.postDate | date("dd.MM.yyyy HH:mm:ss") }}
+                                </p>
 
-                                    <p>{{ post.text }}</p>
+                                <p>{{ post.text }}</p>
 
-                                    <p  class="text-sm">
-                                        <strong>
-                                            Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}
-                                        </strong>
-                                    </p>
+                                <p  class="text-sm">
+                                    <strong>
+                                        Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}
+                                    </strong>
+                                </p>
 
-                                    <p class="text-sm">
-                                        <a href="/Users/{{ post.authorID }}">
-                                            Автор
-                                        </a>
-                                    </p>
-                                </div>
+                                <p class="text-sm">
+                                    <a href="/Users/{{ post.authorID }}">
+                                        Автор
+                                    </a>
+                                </p>
                             </div>
                         </div>
                     </div>
-                    <div class="btn-group" role="group">
-                        <a class="btn btn-primary btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
-                        <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
-                    </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                {% endfor %}
-            </div>
+                </div>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-primary btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
+                    <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+            {% endfor %}
+        </div>
         <br>
-    <br>
+        <br>
+        {% else %}
+            <div class="container container-sm">
+                <div class="d-flex justify-content-center">
+                    <p>Потерялись?</p> <br>
+                    <p>
+                        <a class="btn btn-success" href="/">
+                            вернуться
+                        </a>
+                    </p>
+                </div>
+            </div>
+        {% endif %}
     {% endblock %}

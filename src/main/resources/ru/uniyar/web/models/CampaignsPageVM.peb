@@ -7,7 +7,8 @@
         {% endblock %}
 
     {% block body %}
-        <br>
+    {% if model.userStruct.role.manageOwnCampaigns or model.userStruct.role.manageAllCampaigns %}
+    <br>
     <div class="container">
         <div class="row">
             {% for campaign in model.campaigns %}
@@ -37,4 +38,16 @@
         </div>
 
     </div>
+    {% else %}
+    <div class="container container-sm">
+        <div class="d-flex justify-content-center">
+            <p>Потерялись?</p>
+            <p>
+                <a class="btn btn-success" href="/">
+                    вернуться
+                </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
     {% endblock %}
