@@ -18,6 +18,9 @@ class CharacterHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
+
         val characterID = lensOrNull(characterIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
@@ -26,6 +29,10 @@ class CharacterHandler : HttpHandler {
 
         val owner = findUserByID(character.userID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
+
+        if (userStruct.id != owner.userID)
+            if (!(userStruct.role.manageAllCharacters))
+                return Response(Status.FOUND).header("Location", "/Characters")
 
         val model = CharacterPageVM(character, owner, userStruct)
 
@@ -38,11 +45,18 @@ class DeleteCharacterConfirmationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
+
         val characterID = lensOrNull(characterIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         val character = findCharacterByID(characterID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
+
+        if (character.userID != userStruct.id)
+            if (!(userStruct.role.manageAllCharacters))
+                return Response(Status.FOUND).header("Location", "/Characters")
 
         val model = DeleteCharacterConfirmationPageVM(character, userStruct)
 
@@ -54,6 +68,9 @@ class DeleteCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
 
         val requestCharacterID = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
 
@@ -67,7 +84,7 @@ class DeleteCharacterHandler : HttpHandler {
         val character = findCharacterByID(formCharacterID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
-        if (character.userID == userStruct.id)
+        if (character.userID == userStruct.id || userStruct.role.manageAllCharacters)
             deleteCharacterByID(formCharacterID)
 
         return Response(Status.FOUND).header("Location", "/Characters")
@@ -79,12 +96,16 @@ class EditCharacterConfirmationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
+
         val charID = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
         val character = findCharacterByID(charID)
             ?: return Response(Status.FOUND).header("Location", "/Characters")
 
         if (userStruct.id != character.userID)
-            return Response(Status.FOUND).header("Location", "/Characters/${charID}")
+            if (!(userStruct.role.manageAllCharacters))
+                return Response(Status.FOUND).header("Location", "/Characters/${charID}")
 
         val model = EditCharacterPageVM(character, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -95,6 +116,9 @@ class EditCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
 
         val requestCharId = lensOrNull(characterIdLens, request)?.toIntOrNull() ?: -1
         val form = request.form()
@@ -112,8 +136,7 @@ class EditCharacterHandler : HttpHandler {
         val newRace = form.findSingle("newRace") ?: ""
         val newLevel = form.findSingle("newLevel")?.toIntOrNull() ?: 0
 
-        if (character.userID != userStruct.id
-            || newRace.length > 50
+        if (newRace.length > 50
             || newName.length > 100
             || newClass.length > 100
             || newLevel > 20
@@ -122,6 +145,10 @@ class EditCharacterHandler : HttpHandler {
             || newName.isEmpty()
             || newClass.isEmpty())
             return Response(Status.FOUND).header("Location", "/Characters/${requestCharId}")
+
+        if (userStruct.id != character.userID)
+            if (!(userStruct.role.manageAllCharacters))
+                return Response(Status.FOUND).header("Location", "/Characters")
 
         editCharacter(
             Character(

@@ -14,12 +14,16 @@ class CharactersHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (userStruct.role == Role.MODERATOR){
-            val model = CharactersPageVM(fetchAllCharacters(), false, userStruct)
-            return Response(Status.OK).with(htmlView(request) of model)
-        }
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
 
-        val characters = findCharactersByUserID(userStruct.id)
+        val characters =
+            if (userStruct.role.manageAllCharacters) {
+                fetchAllCharacters()
+            } else {
+                findCharactersByUserID(userStruct.id)
+            }
+
         val model = CharactersPageVM(characters, false, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -29,6 +33,10 @@ class NewCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
+
         val model = NewCharacterPageVM(userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -38,6 +46,9 @@ class CharacterCreationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
 
         val valid = getValidData(request)
 
@@ -97,6 +108,9 @@ class ShowCharactersToChooseHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
 
@@ -105,6 +119,9 @@ class ShowCharactersToChooseHandler : HttpHandler {
 
         findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}/Users")
+
+        if (userStruct.id != userID)
+            return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
         val model = CharactersPageVM(findCharactersByUserID(userID), chooseFlag = true, userStruct)
 
@@ -116,6 +133,9 @@ class ChooseCharacterHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageAllCharacters || userStruct.role.manageOwnCharacters))
+            return Response(Status.FOUND).header("Location", "/")
 
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1

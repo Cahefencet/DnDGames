@@ -12,6 +12,10 @@ class CampaignHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
@@ -20,11 +24,15 @@ class CampaignHandler : HttpHandler {
 
         val posts = fetchAllPostsOfOneCampaign(campaignID)
 
-        val userID = findMasterIDByCampID(campaignID)
+        val masterID = findMasterIDByCampID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val master = findUserByID(userID)
+        val master = findUserByID(masterID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        if (!(isUserInCampaign(userStruct.id, campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns")
 
         val model = CampaignPageVM(campaign, master, posts, userStruct)
 
@@ -37,11 +45,19 @@ class CampaignUsersHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        if (!(isUserInCampaign(userStruct.id, campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns")
 
         val players = getData(campaignID)
 
@@ -70,13 +86,21 @@ class CampaignUsersHandler : HttpHandler {
 
 class AddPlayerHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        userLens(request) ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct = userLens(request) ?: return Response(Status.FOUND).header("Location", "/")
+
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
 
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        findCampaignByID(campaignID)
+        val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        if (userStruct.id != campaign.ownerID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}")
 
         val form = request.form()
 
@@ -99,11 +123,19 @@ class KickUserFromCampaignConfirmationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        if (userStruct.id != campaign.ownerID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
 
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
@@ -119,10 +151,21 @@ class KickUserFromCampaignConfirmationHandler : HttpHandler {
 
 class KickUserFromCampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        userLens(request) ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct = userLens(request) ?: return Response(Status.FOUND).header("Location", "/")
+
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
 
         val valid = getValidData(request)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val masterID = findMasterIDByCampID(valid.campaignID)
+            ?: return Response(Status.FOUND).header("Location", "/Campaigns/${valid.campaignID}")
+
+        if (userStruct.id != masterID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns/${valid.campaignID}")
 
         deleteFromCampaignUsersByUserIDCampaignID(valid.userID, valid.campaignID)
 
@@ -158,10 +201,18 @@ class DeleteCampaignConfirmationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         val campaign = findCampaignByID(campID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        if (userStruct.id != campaign.ownerID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns/${campID}")
 
         val model = DeleteCampaignConfirmationPageVM(campaign, userStruct)
 
@@ -174,6 +225,10 @@ class DeleteCampaignHandler: HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        // user - own, redactor - all
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val requestedCampID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         val formCampID = request.form().findSingle("campId")?.toIntOrNull() ?: -2
@@ -184,9 +239,7 @@ class DeleteCampaignHandler: HttpHandler {
         val campaign = findCampaignByID(formCampID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        val userID = findUserByID(userStruct.id) ?: -1
-
-        if (campaign.ownerID == userID)
+        if (campaign.ownerID == userStruct.id || userStruct.role.manageAllCampaigns)
             deleteCampaignByID(formCampID)
 
         return Response(Status.FOUND).header("Location", "/Campaigns")
@@ -203,10 +256,9 @@ class EditCampaignConfirmationHandler: HttpHandler {
         val campaign = findCampaignByID(campID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        val userID = findUserByID(userStruct.id) ?: -1
-
-        if (userID != campaign.ownerID)
-            return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
+        if (userStruct.id != campaign.ownerID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
         val model = EditCampaignNamePageVM(campaign, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -217,6 +269,7 @@ class EditCampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
         val requestedCampId = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         val form = request.form()
@@ -231,13 +284,14 @@ class EditCampaignHandler : HttpHandler {
         val campaign = findCampaignByID(formCampId)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        val userID = findUserByID(userStruct.id) ?: -1
-
-        if (campaign.ownerID != userID
-            || campaign.campaignName == newName
+        if (campaign.campaignName == newName
             || newName.isEmpty()
             || newName.length > 100)
             return Response(Status.FOUND).header("Location", "/Campaigns/${requestedCampId}")
+
+        if (userStruct.id != campaign.ownerID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns/${requestedCampId}")
 
         editCampaignName(requestedCampId, newName)
 

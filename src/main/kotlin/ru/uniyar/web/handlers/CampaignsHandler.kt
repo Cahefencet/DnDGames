@@ -10,9 +10,11 @@ import ru.uniyar.web.models.NewCampaignPageVM
 
 class CampaignsHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
 
         val model = CampaignsPageVM(fetchAllCampaigns(), userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -23,6 +25,10 @@ class NewCampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val model = NewCampaignPageVM(userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -33,17 +39,18 @@ class CampaignCreationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val name = getValidData(request)
 
         if (name == "not valid")
             return Response(Status.FOUND).header("Location", "/NewCampaign")
 
-        val ownerID = findUserByID(userStruct.id).toString().toIntOrNull() ?: -1
+        val ownerID = findUserByID(userStruct.id)?.userID ?: -1
 
         if (fetchAllCampaigns()
-            .any {
-                (it.campaignName == name) && (it.ownerID == ownerID)
-            })
+            .any { (it.campaignName == name) && (it.ownerID == ownerID) })
             return Response(Status.FOUND).header("Location", "/NewCampaign")
 
         insertCampaign(

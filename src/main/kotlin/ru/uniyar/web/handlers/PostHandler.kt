@@ -15,14 +15,18 @@ class NewPostHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        //todo проверка на отношение usera к кампании, иначе создать пост нельзя
-
+        if (!(isUserInCampaign(userStruct.id, campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns")
 
         val model = PostPageVM(campaign, null, null, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -34,11 +38,18 @@ class PostCreationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
+
+        if (!(isUserInCampaign(userStruct.id, campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns")
 
         val valid = getValidData(request)
         if (valid.size < 3)
@@ -47,8 +58,6 @@ class PostCreationHandler : HttpHandler {
         val text = valid[2]
         val visibility = Visibility.valueOf(valid[1])
         val date = LocalDate.parse(valid[0])
-
-        //todo проверка на отношение usera к кампании, иначе создать пост нельзя
 
         val post = CampaignPost(
             -1,
@@ -95,10 +104,17 @@ class EditPostConfirmationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
 
         val campaign = findCampaignByID(campID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        if (!(isUserInCampaign(userStruct.id, campID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns")
 
         val postID = lensOrNull(postIdLens, request)?.toIntOrNull() ?: -1
 
@@ -111,8 +127,6 @@ class EditPostConfirmationHandler : HttpHandler {
         if (author.userID != userStruct.id)
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        //todo проверка на отношение к кампании
-
         val model = PostPageVM(campaign, post, post.text, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -123,7 +137,14 @@ class EditPostHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val campID = lensOrNull(campaignIdLens, request)?.toIntOrNull() ?: -1
+
+        if (!(isUserInCampaign(userStruct.id, campID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns")
 
         findCampaignByID(campID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns")
@@ -136,8 +157,8 @@ class EditPostHandler : HttpHandler {
         val author = findUserByID(post.authorID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        //todo проверка на отношение к кампании
         if (userStruct.id != author.userID)
+            if (!(userStruct.role.manageAllCampaigns))
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
         val form = request.form()
@@ -180,16 +201,21 @@ class DeletePostConfirmationHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
+        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
         val postID = lensOrNull(postIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val post = findPostByID(postID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
+        if (!(isUserInCampaign(userStruct.id, post.campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns")
+
         val author = findUserByID(post.authorID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
-
-        //todo проверка на отношение usera к кампании
 
         val model = DeletePostConfirmationPageVM(post, author, post.text, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -200,6 +226,9 @@ class DeletePostHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageAllCampaigns|| userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
 
         val requestPostID = lensOrNull(postIdLens, request)?.toIntOrNull() ?: -1
 
@@ -213,13 +242,13 @@ class DeletePostHandler : HttpHandler {
         val post = findPostByID(formPostID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val campaignID = findCampIDByPostID(formPostID) ?: -1
+        if (!(isUserInCampaign(userStruct.id, post.campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        //todo проверка на отношение к кампании
-
-        if (post.authorID == userStruct.id)
+        if (post.authorID == userStruct.id || userStruct.role.manageAllCampaigns)
             deletePostByID(formPostID)
 
-        return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}")
+        return Response(Status.FOUND).header("Location", "/Campaigns/${post.campaignID}")
     }
 }

@@ -15,8 +15,10 @@ class UsersHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
-//        if (userStruct.role != Role.ADMIN)
-//            return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageUsers))
+            return Response(Status.FOUND).header("Location", "/")
+
         val users = fetchAllUsers()
         val model = UsersPageVM(users, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -27,10 +29,15 @@ class DeleteUserConfirmationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
-        // admin
+
+        if (!(userStruct.role.manageUsers))
+            return Response(Status.FOUND).header("Location", "/")
+
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull() ?: -1
+
         val user = findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location", "/Users")
+
         val model = DeleteUserConfirmationPageVM(user, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
@@ -41,7 +48,8 @@ class DeleteUserHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
-        //todo проверить role здесь и в аналогичных ситуациях
+        if (!(userStruct.role.manageUsers))
+            return Response(Status.FOUND).header("Location", "/")
 
         val form = request.form()
         val formUserID = form.findSingle("userID")?.toIntOrNull() ?: -1

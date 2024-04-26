@@ -122,7 +122,7 @@ fun insertPost(campaignPost: CampaignPost){
 fun insertPlayer(userId: Int, campaignId: Int){
     try {
         return transaction {
-            if (!isUserAlreadyInCampaign(userId, campaignId)) {
+            if (!isUserInCampaign(userId, campaignId)) {
                 CampaignUsers.insert {
                     it[userID] = userId
                     it[campaignID] = campaignId
@@ -138,7 +138,7 @@ fun insertPlayer(userId: Int, campaignId: Int){
     }
 }
 
-private fun isUserAlreadyInCampaign(userId: Int, campaignId: Int) : Boolean {
+fun isUserInCampaign(userId: Int, campaignId: Int) : Boolean {
     try {
         return transaction {
             CampaignUsers
