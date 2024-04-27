@@ -18,8 +18,8 @@
                 <p>Раса: {{ model.character.race }}</p>
                 <p>Уровень: {{ model.character.level }}</p>
                 <div class="btn-group" role="group">
-                    <a href="/Characters/{{ model.character.characterID }}/delete" class="btn btn-danger">Удалить персонажа</a>
                     <a href="/Characters/{{ model.character.characterID }}/edit" class="btn btn-warning">Изменить персонажа</a>
+                    <a href="/Characters/{{ model.character.characterID }}/delete" class="btn btn-danger">Удалить персонажа</a>
                 </div>
             </h5>
         </div>
