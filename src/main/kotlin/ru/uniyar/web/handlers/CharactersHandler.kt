@@ -2,12 +2,12 @@ package ru.uniyar.web.handlers
 
 import org.http4k.core.*
 import org.http4k.core.body.form
-import ru.uniyar.auth.Role
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
 import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.CharactersPageVM
 import ru.uniyar.web.models.NewCharacterPageVM
+import ru.uniyar.web.pagination.*
 
 class CharactersHandler : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -22,9 +22,35 @@ class CharactersHandler : HttpHandler {
                 fetchAllCharacters()
             } else {
                 findCharactersByUserID(userStruct.id)
-            }
+            }.toMutableList()
 
-        val model = CharactersPageVM(characters, false, userStruct)
+        val page = request.query("page")?.toIntOrNull() ?: 1
+
+        val pageAmount = pageAmount(characters, charactersOnPage)
+
+        if (page !in 1 ..pageAmount)
+            return Response(Status.FOUND).header("Location", "/Characters")
+
+        val paginator =
+            Paginator(
+                Uri.of("/Characters"),
+                page,
+                pageAmount,
+            )
+
+        val charactersFilteredByPageNumber =
+            filterByPageNumber(characters, charactersOnPage, paginator.getCur())
+
+        val paginationData = getPaginationData(paginator)
+
+        val model =
+            CharactersPageVM(
+                charactersFilteredByPageNumber,
+                chooseFlag = false,
+                userStruct,
+                paginationData
+            )
+
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
@@ -123,7 +149,34 @@ class ShowCharactersToChooseHandler : HttpHandler {
         if (userStruct.id != userID)
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        val model = CharactersPageVM(findCharactersByUserID(userID), chooseFlag = true, userStruct)
+        val characters = findCharactersByUserID(userID).toMutableList()
+
+        val page = request.query("page")?.toIntOrNull() ?: 1
+
+        val pageAmount = pageAmount(characters, charactersOnPage)
+
+        if (page !in 1 ..pageAmount)
+            return Response(Status.FOUND).header("Location", "/Choose/${campID}/${userID}")
+
+        val paginator =
+            Paginator(
+                Uri.of("/Choose/${campID}/${userID}"),
+                page,
+                pageAmount,
+            )
+
+        val charactersFilteredByPageNumber =
+            filterByPageNumber(characters, charactersOnPage, paginator.getCur())
+
+        val paginationData = getPaginationData(paginator)
+
+        val model =
+            CharactersPageVM(
+                charactersFilteredByPageNumber,
+                chooseFlag = true,
+                userStruct,
+                paginationData
+            )
 
         return Response(Status.OK).with(htmlView(request) of model)
     }

@@ -39,7 +39,9 @@
             </div>
         {% endif %}
 
+        {% include "./Pagination.peb" %}
     </div>
+
     {% else %}
     <div class="container container-sm">
         <div class="d-flex justify-content-center">
@@ -50,5 +52,6 @@
             </p>
         </div>
     </div>
+
     {% endif %}
     {% endblock %}

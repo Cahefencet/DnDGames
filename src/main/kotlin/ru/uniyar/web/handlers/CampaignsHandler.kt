@@ -7,6 +7,7 @@ import ru.uniyar.utils.htmlView
 import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.CampaignsPageVM
 import ru.uniyar.web.models.NewCampaignPageVM
+import ru.uniyar.web.pagination.*
 
 class CampaignsHandler : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -22,7 +23,26 @@ class CampaignsHandler : HttpHandler {
             else
                 fetchAllCampaignsByUserID(userStruct.id)
 
-        val model = CampaignsPageVM(campaigns, userStruct)
+        val page = request.query("page")?.toIntOrNull() ?: 1
+
+        val pageAmount = pageAmount(campaigns, campaignsOnPage)
+
+        if (page !in 1 ..pageAmount)
+            return Response(Status.FOUND).header("Location", "/Campaigns")
+
+        val paginator =
+            Paginator(
+                Uri.of("/Campaigns"),
+                page,
+                pageAmount,
+                )
+
+        val campaignsFilteredByPageNumber =
+            filterByPageNumber(campaigns, campaignsOnPage, paginator.getCur())
+
+        val paginationData = getPaginationData(paginator)
+
+        val model = CampaignsPageVM(campaignsFilteredByPageNumber, userStruct, paginationData)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
