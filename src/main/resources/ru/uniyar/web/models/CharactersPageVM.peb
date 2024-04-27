@@ -22,14 +22,14 @@
                                 </span>
                                 </p>
                             </div>
-                            <div class="card-body" style="height: 175px;">
-                                <p class="text-start">
+                            <div class="card-body" style="height: 90px;">
+                                <p class="text-start" style="margin-top:0em; margin-bottom:0em; ">
                                 <span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 13ch;">
                                     Уровень: {{ character.level }}
                                 </span>
                                 </p>
-                                <p class="text-start">
-                                <span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 13ch;">
+                                <p class="text-start" style="margin-top:0em; margin-bottom:0em; ">
+                                <span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 15ch;">
                                     Класс: {{ character.characterClass }}
                                 </span>
                                 </p>
