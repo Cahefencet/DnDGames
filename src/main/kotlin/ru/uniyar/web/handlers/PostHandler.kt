@@ -28,7 +28,7 @@ class NewPostHandler : HttpHandler {
             if (!(userStruct.role.manageAllCampaigns))
                 return Response(Status.FOUND).header("Location", "/Campaigns")
 
-        val model = PostPageVM(campaign, null, null, userStruct)
+        val model = PostPageVM(campaign.ownerID, null, null, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
@@ -128,7 +128,7 @@ class EditPostConfirmationHandler : HttpHandler {
             if (!(userStruct.role.manageAllCampaigns))
             return Response(Status.FOUND).header("Location", "/Campaigns/${campID}")
 
-        val model = PostPageVM(campaign, post, post.text, userStruct)
+        val model = PostPageVM(campaign.ownerID, post, post.text, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

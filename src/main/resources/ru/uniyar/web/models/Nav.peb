@@ -36,13 +36,17 @@
                     </ul>
                     <div class="nav-item dropdown" style="color:#ffffff;">
                         <a class="nav-link dropdown-toggle text-light" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Профиль
+                            {% if model.userStruct != null %}
+                                {{ model.userStruct.name }}
+                            {% else %}
+                                Профиль
+                            {% endif %}
                         </a>
                         <ul class="dropdown-menu">
                             {% if model.userStruct != null %}
                                 <li>
                                     <a class="dropdown-item">
-                                            {{ model.userStruct.name }}
+                                            ID: {{ model.userStruct.id }}
                                     </a>
                                 </li>
                                 <li>
