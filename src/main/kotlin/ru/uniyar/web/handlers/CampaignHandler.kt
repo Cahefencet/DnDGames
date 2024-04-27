@@ -1,11 +1,15 @@
 package ru.uniyar.web.handlers
 
+import jdk.jfr.DataAmount
 import org.http4k.core.*
 import org.http4k.core.body.form
 import ru.uniyar.db.*
 import ru.uniyar.utils.htmlView
 import ru.uniyar.utils.userLens
 import ru.uniyar.web.models.*
+import ru.uniyar.web.pagination.Paginator
+import ru.uniyar.web.pagination.PostPaginationData
+import java.time.LocalDate
 
 class CampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -16,13 +20,18 @@ class CampaignHandler : HttpHandler {
         if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
             return Response(Status.FOUND).header("Location", "/")
 
+        val user = findUserByID(userStruct.id)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
         val campaignID = lensOrNull(campaignIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        val posts = fetchAllPostsOfOneCampaign(campaignID)
+        if (!(isUserInCampaign(userStruct.id, campaignID)))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns")
 
         val masterID = findMasterIDByCampID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
@@ -30,13 +39,42 @@ class CampaignHandler : HttpHandler {
         val master = findUserByID(masterID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        if (!(isUserInCampaign(userStruct.id, campaignID)))
-            if (!(userStruct.role.manageAllCampaigns))
-                return Response(Status.FOUND).header("Location","/Campaigns")
+        val dates = fetchAllPostDatesOfOneCampaign(campaignID, user) // size == 3 для игрока
 
-        val model = CampaignPageVM(campaign, master, posts, userStruct)
+        var pageAmount = dates.size
+        if (pageAmount == 0)
+            pageAmount = 1
+
+        val page = request.query("page")?.toIntOrNull() ?: pageAmount
+
+        if (page !in 1..pageAmount)
+            return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}")
+
+        val paginationData = getPaginationData(dates, campaignID)
+
+        val paginationFlag = (paginationData.size > 0)
+
+        val posts : MutableList<CampaignPost> =
+            if (dates.size == 0){
+                mutableListOf()
+            }
+            else
+                fetchAllPostsOfOneCampaignByGameDateAndPlayer(campaignID, dates[page-1], user).toMutableList()
+
+        val model = CampaignPageVM(campaign, master, posts, userStruct, paginationData, paginationFlag)
 
         return Response(Status.OK).with(htmlView(request) of model)
+    }
+
+    private fun getPaginationData(dates : MutableList<LocalDate>, campaignID: Int) : MutableList<PostPaginationData> {
+        val data = mutableListOf<PostPaginationData>()
+        dates.forEach {
+            data.add(PostPaginationData(
+                it,
+                Uri.of("/Campaigns/${campaignID}?page=${dates.indexOf(it) + 1}")
+            ))
+        }
+        return data
     }
 }
 

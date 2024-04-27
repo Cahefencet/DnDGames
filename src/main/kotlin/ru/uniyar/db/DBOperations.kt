@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.uniyar.auth.Role
 import java.sql.SQLException
+import java.time.LocalDate
 
 
 fun editCharacter(newCharacter: Character){
@@ -564,14 +565,42 @@ fun findCampaignByID(id : Int) : Campaign? {
     }
 }
 
-fun fetchAllPostsOfOneCampaign(campaignID: Int): List<CampaignPost> {
+fun fetchAllPostDatesOfOneCampaign(campaignId: Int, user: User) : MutableList<LocalDate> {
+    val uniqueDates = mutableListOf<LocalDate>()
+    transaction {
+        CampaignPosts
+            .selectAll()
+            .orderBy(CampaignPosts.gameDate, SortOrder.ASC)
+            .where {
+                (CampaignPosts.campaignID eq campaignId)
+                    .and((CampaignPosts.visibility eq Visibility.EVERYBODY)
+                        .or((CampaignPosts.visibility eq Visibility.SINGLE_PLAYER)
+                            .and(CampaignPosts.authorID eq user.userID))
+                        .or((CampaignPosts.visibility eq Visibility.MASTER)
+                            .and(CampaignPosts.authorID eq user.userID)))
+        }.map {
+            it[CampaignPosts.gameDate]
+        }.distinct().forEach {
+            uniqueDates.add(it)
+        }
+    }
+    return uniqueDates
+}
+
+fun fetchAllPostsOfOneCampaignByGameDateAndPlayer(campaignID: Int, date: LocalDate, user: User): List<CampaignPost> {
     try {
         return transaction {
             CampaignPosts
                 .selectAll()
                 .orderBy(CampaignPosts.postDate, SortOrder.ASC)
                 .where {
-                    CampaignPosts.campaignID eq campaignID
+                    (CampaignPosts.campaignID eq campaignID)
+                        .and(CampaignPosts.gameDate eq date)
+                        .and((CampaignPosts.visibility eq Visibility.EVERYBODY)
+                            .or((CampaignPosts.visibility eq Visibility.SINGLE_PLAYER)
+                                .and(CampaignPosts.authorID eq user.userID))
+                            .or((CampaignPosts.visibility eq Visibility.MASTER)
+                                .and(CampaignPosts.authorID eq user.userID)))
                 }
                 .map {
                         row ->

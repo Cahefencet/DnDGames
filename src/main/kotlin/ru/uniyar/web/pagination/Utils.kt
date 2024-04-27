@@ -1,6 +1,7 @@
 package ru.uniyar.web.pagination
 
 import org.http4k.core.Uri
+import java.time.LocalDate
 
 data class Page(val number: Int, val uri: Uri)
 
@@ -59,6 +60,11 @@ data class PaginationData(
     val cur : Page,
     val prev : Uri,
     val next : Uri
+)
+
+data class PostPaginationData(
+    val date: LocalDate,
+    val uri: Uri,
 )
 
 const val campaignsOnPage = 6

@@ -7,17 +7,35 @@
     {% block body %}
         {% if model.userStruct.role.manageOwnCampaigns or model.userStruct.role.manageAllCampaigns %}
         <div class="container">
-            <div>
-                <h5>
-                    <p>Название: {{ model.campaign.campaignName }}</p>
-                    <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
-                    <p>Айди кампании: {{ model.campaign.campaignID }}</p>
-                </h5>
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5>
+                        <p>Название: {{ model.campaign.campaignName }}</p>
+                        <p>Мастер: <a href="/Users/{{ model.master.userID }}">{{ model.master.userName }}</a></p>
+                        <p>Айди кампании: {{ model.campaign.campaignID }}</p>
+                    </h5>
+                </div>
+
+                <div class="col-md-6 text-end">
+                        {% if model.paginationFlag %}
+                        <div class="dropdown text-end">
+                            <a class="btn btn-dark dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                Список партий
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                                    {% for page in model.paginationData %}
+                                    <li><a class="dropdown-item" href="{{ page.uri }}">Партия {{ loop.index + 1 }}. ({{ page.date | date("dd.MM.yyyy") }})</a></li>
+                                    {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                </div>
             </div>
 
-            <br>
-            <br>
-
+            <p></p>
+            <p></p>
             <div>
                 <h4 class="text-center">
                     <div class="btn-group" role="group">
@@ -38,8 +56,8 @@
                 </h4>
             </div>
 
-            <br>
-            <br>
+            <p></p>
+            <p></p>
             {% for post in model.posts %}
                 <div class="row">
                     <div class="card row-hover pos-relative py-3 px-3 mb-3 border-dark border-top-0 border-right-0 border-bottom-0 rounded-0">
@@ -75,16 +93,16 @@
                         <a class="btn btn-primary btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
                         <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
                     </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
                 {% endif %}
 
             {% endfor %}
         </div>
-        <br>
-        <br>
+        <p></p>
+        <p></p>
         {% else %}
             <div class="container container-sm">
                 <div class="d-flex justify-content-center">

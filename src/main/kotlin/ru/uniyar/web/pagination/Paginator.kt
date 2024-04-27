@@ -35,10 +35,6 @@ class Paginator(
         return uri.query("page", page.toString())
     }
 
-    fun getUri(): Uri {
-        return this.uri
-    }
-
     fun getCur(): Int {
         return this.cur
     }
