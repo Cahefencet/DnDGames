@@ -16,7 +16,13 @@ class CampaignsHandler : HttpHandler {
         if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
             return Response(Status.FOUND).header("Location", "/")
 
-        val model = CampaignsPageVM(fetchAllCampaigns(), userStruct)
+        val campaigns : MutableList<Campaign> =
+            if (userStruct.role.manageAllCampaigns)
+                fetchAllCampaigns()
+            else
+                fetchAllCampaignsByUserID(userStruct.id)
+
+        val model = CampaignsPageVM(campaigns, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }

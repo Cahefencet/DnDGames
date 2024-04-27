@@ -29,13 +29,13 @@
             {% endfor %}
         </div>
         <br>
-        {% if model.userStruct.role.manageCampaigns %}
+        {% if model.userStruct.role.manageOwnCampaigns %}
             <div class="container">
-                <h4>
+                <div class="text-center">
                     <a class="btn btn-dark" href="/Campaigns-new">
                         Создать новую кампанию
                     </a>
-                </h4>
+                </div>
             </div>
         {% endif %}
 

@@ -85,7 +85,6 @@
     {% else %}
     <div class="container container-sm">
         <div class="d-flex justify-content-center">
-            <p>Потерялись?</p>
             <p>
                 <a class="btn btn-success" href="/">
                     вернуться

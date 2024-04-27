@@ -25,9 +25,6 @@ class UserHandler : HttpHandler {
         val userStruct = userLens(request)
             ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageUsers))
-            return Response(Status.FOUND).header("Location", "/")
-
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/")
 

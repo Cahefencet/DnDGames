@@ -62,26 +62,26 @@
         {% endfor %}
     </div>
         <br>
-        {% if not model.chooseFlag %}
+        {% if not model.chooseFlag and model.userStruct.role.manageOwnCharacters %}
             <div class="container">
-                <h4>
-                    <a class="page-link" href="/Characters-new">
-                        <button class="btn btn-dark">Добавить персонажа</button>
+                <div class="text-center">
+                    <a class="btn btn-dark" href="/Characters-new">
+                       Добавить персонажа
                     </a>
-                </h4>
+                </div>
             </div>
         {% endif %}
     </div>
     {% else %}
-    <div class="container container-sm">
-        <div class="d-flex justify-content-center">
-            <p>Потерялись?</p>
-            <p>
-                <a class="btn btn-success" href="/">
-                    вернуться
-                </a>
-            </p>
+        <div class="container container-sm">
+            <div class="d-flex justify-content-center">
+                <p>
+                    <a class="btn btn-success" href="/">
+                        вернуться
+                    </a>
+                </p>
+            </div>
         </div>
-    </div>
+
     {% endif %}
     {% endblock %}

@@ -216,7 +216,11 @@ class DeletePostConfirmationHandler : HttpHandler {
                 return Response(Status.FOUND).header("Location", "/Campaigns")
 
         val author = findUserByID(post.authorID)
-            ?: return Response(Status.FOUND).header("Location","/Campaigns")
+            ?: return Response(Status.FOUND).header("Location","/Campaigns/${post.campaignID}")
+
+        if (userStruct.id != author.userID)
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns/${post.campaignID}")
 
         val model = DeletePostConfirmationPageVM(post, author, post.text, userStruct)
         return Response(Status.OK).with(htmlView(request) of model)

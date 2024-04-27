@@ -726,3 +726,40 @@ fun fetchAllCampaigns() : MutableList<Campaign> {
         throw e
     }
 }
+
+fun fetchAllCampaignsByUserID(userId: Int) : MutableList<Campaign> {
+    try {
+        val campIds = fetchAllCampaignIDsByUserID(userId)
+        val campLst = mutableListOf<Campaign>()
+
+        campIds.forEach{
+            val camp = findCampaignByID(it)
+            if (camp != null)
+                campLst.add(camp)
+        }
+
+        return campLst
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun fetchAllCampaignIDsByUserID(userId: Int) : MutableList<Int> {
+    try {
+        return transaction {
+            CampaignUsers
+                .selectAll()
+                .where {
+                    (CampaignUsers.userID eq userId)
+            }.map {
+                it[CampaignUsers.campaignID]
+            }.toMutableList()
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
