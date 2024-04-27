@@ -133,15 +133,15 @@ class KickUserFromCampaignConfirmationHandler : HttpHandler {
         val campaign = findCampaignByID(campaignID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns")
 
-        if (userStruct.id != campaign.ownerID)
-            if (!(userStruct.role.manageAllCampaigns))
-                return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
-
         val userID = lensOrNull(userIdLens, request)?.toIntOrNull()
             ?: return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
 
         val user = findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
+
+        if ((userStruct.id != campaign.ownerID) && (userStruct.id != userID))
+            if (!(userStruct.role.manageAllCampaigns))
+                return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
 
         val model = KickUserFromCampaignConfirmationPageVM(user, campaign, userStruct)
 
@@ -163,7 +163,7 @@ class KickUserFromCampaignHandler : HttpHandler {
         val masterID = findMasterIDByCampID(valid.campaignID)
             ?: return Response(Status.FOUND).header("Location", "/Campaigns/${valid.campaignID}")
 
-        if (userStruct.id != masterID)
+        if ((userStruct.id != masterID) && (userStruct.id != valid.userID))
             if (!(userStruct.role.manageAllCampaigns))
                 return Response(Status.FOUND).header("Location", "/Campaigns/${valid.campaignID}")
 
