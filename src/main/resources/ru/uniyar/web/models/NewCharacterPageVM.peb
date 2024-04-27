@@ -8,17 +8,17 @@
 {% if model.userStruct.role.manageOwnCharacters %}
 
 <form class="text-center mt-5" method="POST">
-    Имя: <br>
-    <input type="text" name="name" placeholder="Имя" required> <br> <br>
+    <p>Имя:</p>
+    <input type="text" name="name" placeholder="Боблин" required> <br> <br>
 
-    Класс / классы: <br>
-    <input type="text" name="characterClass" placeholder="Класс / классы" required> <br> <br>
+    <p>Класс / классы:</p>
+    <input type="text" name="characterClass" placeholder="чародей 1, колдун 5" required> <br> <br>
 
-    Раса:<br>
-    <input type="text" name="race" placeholder="Раса" required> <br> <br>
+    <p>Раса:</p>
+    <input type="text" name="race" placeholder="Гоблин" required> <br> <br>
 
-    Уровень: <br>
-    <input type="number" min="1" max="20" name="level" placeholder="Уровень" required> <br> <br>
+    <p>Уровень:</p>
+    <input type="number" min="1" max="20" name="level" style="width: 150px;" placeholder="6" required> <br> <br>
 
     <button type="submit" class="btn btn-primary">Принять</button>
 </form>

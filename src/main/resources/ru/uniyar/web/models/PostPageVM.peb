@@ -24,14 +24,14 @@
                 <div class="col-md-6" style="text-align:left;">
                     <label for="date" class="form-label">Выберите дату игры:</label>
                     {% if model.post == null %}
-                        <input type="date" id="date" name="date" class="form-control" required>
+                        <input type="date" id="date" name="date" class="form-control border border-dark" required>
                         {% else %}
-                        <input type="date" id="date" name="date" class="form-control" value="{{ model.post.gameDate }}" required>
+                        <input type="date" id="date" name="date" class="form-control border border-dark" value="{{ model.post.gameDate }}" required>
                     {% endif %}
                 </div>
                 <div class="col-md-6" style="text-align:right;">
-                    <label class="mr-sm-2" for="select">Кто увидит пост:</label><br>
-                    <select class="custom-select mr-sm-2" id="select" name="visibility">
+                    <label class="mr-sm-2" for="select">Кто увидит пост:</label><br><br>
+                    <select class="custom-select mr-sm-2 border border-dark" id="select" name="visibility">
                         <option value="EVERYBODY" selected>Мастер и игроки</option>
                         <option value="MASTER">Только мастер</option>
                         <option value="SINGLE_PLAYER">Только игрок</option>
@@ -44,11 +44,11 @@
             <br>
             <p style="text-align:left;">Что было:</p>
             {% if model.post == null %}
-                <textarea class="form-control" name="text" id="text" rows="20"
+                <textarea class="form-control border border-dark" name="text" id="text" rows="20"
                           placeholder="А разве что-то было?.. Что ВООБЩЕ было?.. Что есть?... Кто мы?... Кто я?...&#13;&#10;Ограничение - 3500 символов. Разделяйте 'конспекты' на посты с умом."
                           maxlength="3500" required></textarea>
                 {% else %}
-                <textarea class="form-control" name="text" id="text" rows="20" maxlength="3500" required>{{ model.text }}</textarea>
+                <textarea class="form-control border border-dark" name="text" id="text" rows="20" maxlength="3500" required>{{ model.text }}</textarea>
             {% endif %}
 
         </div>

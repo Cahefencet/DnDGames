@@ -7,9 +7,12 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
 {% include "./Nav.peb" %}
-<h1 class="text-center mt-5" >
-{% block title %}{% endblock %}</h1>
+
+<h1 class="text-center mt-5">
+{% block title %}{% endblock %}
+</h1>
 
 {% block body %}{% endblock %}
 

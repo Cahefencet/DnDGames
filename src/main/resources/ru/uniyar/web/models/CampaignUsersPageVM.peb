@@ -41,7 +41,8 @@
                             </td>
                             {% if (player.character == null) %}
                                 <td class="table-danger">
-                                    {% if model.userStruct.role.manageOwnCampaigns %}
+                                    {% if (model.userStruct.role.manageOwnCampaigns)
+                                    and (model.userStruct.id == player.user.userID) %}
                                         <a class="btn btn-secondary"
                                            href="/Choose/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
                                             Выбрать персонажа
@@ -57,9 +58,12 @@
                                 <td>{{ player.character.level }}</td>
                             {% endif %}
                             <td>
-                                <a class="btn btn-danger btn-sm" href="/Kick/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
-                                    ✖️
-                                </a>
+                                {% if (model.userStruct.id == model.campaign.ownerID) or (model.userStruct.id == player.user.userID) or (model.userStruct.role.manageAllCampaigns) %}
+                                    <a class="btn btn-danger btn-sm"
+                                       href="/Kick/{{ model.campaign.campaignID }}/{{ player.user.userID }}">
+                                        ✖️
+                                    </a>
+                                {% endif %}
                             </td>
                         </tr>
                             {% endfor %}
@@ -68,19 +72,21 @@
             </div>
             {% endif %}
 
-        <div style="width: 50%">
-            <form method="post">
-                <div class="container" style="margin-bottom: 10px;">
-                    <label for="nicknameInput" class="form-label">Чтобы добавить игрока, введите его ник или ID:</label>
-                    <div class="d-flex align-items-center">
-                        <div style="flex: 1;">
-                            <input type="text" name="input" class="form-control me-1" id="nicknameInput" aria-describedby="nicknameHelp" placeholder="123456 VasyaPupkin" required>
+            {% if model.userStruct.id == model.campaign.ownerID %}
+                <div style="width: 50%">
+                    <form method="post">
+                        <div class="container" style="margin-bottom: 10px;">
+                            <label for="nicknameInput" class="form-label">Чтобы добавить игрока, введите его ник или ID:</label>
+                            <div class="d-flex align-items-center">
+                                <div style="flex: 1;">
+                                    <input type="text" name="input" class="form-control me-1" id="nicknameInput" aria-describedby="nicknameHelp" placeholder="123456 VasyaPupkin" required>
+                                </div>
+                                <button type="submit" class="btn btn-success" style="margin-left: 10px;">Добавить</button>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-success" style="margin-left: 10px;">Добавить</button>
-                    </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            {% endif %}
     </div>
     {% else %}
     <div class="container container-sm">
