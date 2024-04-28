@@ -18,7 +18,7 @@ object Campaigns : Table() {
     val ownerId = integer("owner_id")
 }
 
-object Characters: Table() {
+object Characters : Table() {
     val characterID = integer("character_id")
     val userID = integer("user_id")
     val name = varchar("name", 100)
@@ -27,7 +27,7 @@ object Characters: Table() {
     val level = integer("level")
 }
 
-object CampaignUsers: Table() {
+object CampaignUsers : Table() {
     val id = integer("id")
     val userID = integer("user_id")
     val campaignID = integer("campaign_id")
@@ -35,7 +35,7 @@ object CampaignUsers: Table() {
     val characterID = integer("character_id").nullable()
 }
 
-object CampaignPosts  : Table() {
+object CampaignPosts : Table() {
     val postID = integer("post_id")
     val campaignID = integer("campaign_id")
     val authorID = integer("author_id")
@@ -45,13 +45,13 @@ object CampaignPosts  : Table() {
     val postDate = datetime("post_date")
 }
 
-enum class Visibility{
+enum class Visibility {
     MASTER,
     SINGLE_PLAYER,
     EVERYBODY,
 }
 
-enum class PlayerRole{
+enum class PlayerRole {
     MASTER,
     PLAYER,
     NONE,

@@ -2,14 +2,12 @@ package ru.uniyar.db
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.uniyar.auth.Role
 import java.sql.SQLException
 import java.time.LocalDate
 
-
-fun editCharacter(newCharacter: Character){
+fun editCharacter(newCharacter: Character)  {
     try {
         return transaction {
             Characters.update({
@@ -28,10 +26,13 @@ fun editCharacter(newCharacter: Character){
     }
 }
 
-fun editCampaignName(campaignId: Int, newName: String) {
+fun editCampaignName(
+    campaignId: Int,
+    newName: String,
+) {
     try {
         return transaction {
-            Campaigns.update ({
+            Campaigns.update({
                 (Campaigns.campaignID eq campaignId)
             }) {
                 it[Campaigns.campaignName] = newName
@@ -44,10 +45,10 @@ fun editCampaignName(campaignId: Int, newName: String) {
     }
 }
 
-fun editPost(newPost : CampaignPost) {
+fun editPost(newPost: CampaignPost) {
     try {
         return transaction {
-            CampaignPosts.update ({
+            CampaignPosts.update({
                 (CampaignPosts.postID eq newPost.postId)
             }) {
                 it[CampaignPosts.text] = newPost.text
@@ -62,12 +63,16 @@ fun editPost(newPost : CampaignPost) {
     }
 }
 
-fun addCharToCampaign(characterId: Int, userId: Int, campaignId: Int) {
+fun addCharToCampaign(
+    characterId: Int,
+    userId: Int,
+    campaignId: Int,
+) {
     try {
         return transaction {
             CampaignUsers.update({
                 (CampaignUsers.userID eq userId)
-                    .and (CampaignUsers.campaignID eq campaignId)
+                    .and(CampaignUsers.campaignID eq campaignId)
             }) {
                 it[CampaignUsers.characterID] = characterId
             }
@@ -99,7 +104,7 @@ fun insertCharacter(character: Character) {
     }
 }
 
-fun insertPost(campaignPost: CampaignPost){
+fun insertPost(campaignPost: CampaignPost)  {
     try {
         return transaction {
             exec("SET FOREIGN_KEY_CHECKS=0")
@@ -120,7 +125,10 @@ fun insertPost(campaignPost: CampaignPost){
     }
 }
 
-fun insertPlayer(userId: Int, campaignId: Int){
+fun insertPlayer(
+    userId: Int,
+    campaignId: Int,
+)  {
     try {
         return transaction {
             if (!isUserInCampaign(userId, campaignId)) {
@@ -139,7 +147,10 @@ fun insertPlayer(userId: Int, campaignId: Int){
     }
 }
 
-fun isUserInCampaign(userId: Int, campaignId: Int) : Boolean {
+fun isUserInCampaign(
+    userId: Int,
+    campaignId: Int,
+): Boolean {
     try {
         return transaction {
             CampaignUsers
@@ -159,12 +170,13 @@ fun isUserInCampaign(userId: Int, campaignId: Int) : Boolean {
 fun insertUser(user: User) {
     try {
         return transaction {
-            if (findUserByName(user.userName) == null)
+            if (findUserByName(user.userName) == null) {
                 Users.insert {
                     it[username] = user.userName
                     it[password] = user.password
                     it[userRole] = user.role
                 }
+            }
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -191,7 +203,10 @@ fun insertCampaign(campaign: Campaign) {
     }
 }
 
-private fun campaignCreation(campID: Int, usrID : Int) {
+private fun campaignCreation(
+    campID: Int,
+    usrID: Int,
+) {
     try {
         return transaction {
             exec("SET FOREIGN_KEY_CHECKS=0")
@@ -224,10 +239,10 @@ fun deleteCharacterByID(id: Int) {
     }
 }
 
-private fun deleteFromCampaignUsersByCharID(characterID : Int) {
+private fun deleteFromCampaignUsersByCharID(characterID: Int) {
     try {
         return transaction {
-            CampaignUsers.update ({
+            CampaignUsers.update({
                 (CampaignUsers.characterID eq characterID)
             }) {
                 it[CampaignUsers.characterID] = null
@@ -360,7 +375,7 @@ private fun deleteFromCampaignPostsByUserID(id: Int) {
     }
 }
 
-private fun deleteFromCampaignUsersByUserID(id : Int) {
+private fun deleteFromCampaignUsersByUserID(id: Int) {
     try {
         return transaction {
             CampaignUsers.deleteWhere {
@@ -374,7 +389,10 @@ private fun deleteFromCampaignUsersByUserID(id : Int) {
     }
 }
 
-fun deleteFromCampaignUsersByUserIDCampaignID(userId: Int, campId: Int) {
+fun deleteFromCampaignUsersByUserIDCampaignID(
+    userId: Int,
+    campId: Int,
+) {
     try {
         return transaction {
             CampaignUsers.deleteWhere {
@@ -390,8 +408,7 @@ fun deleteFromCampaignUsersByUserIDCampaignID(userId: Int, campId: Int) {
     }
 }
 
-
-fun findPostByID(id : Int) : CampaignPost? {
+fun findPostByID(id: Int): CampaignPost? {
     try {
         return transaction {
             CampaignPosts
@@ -418,7 +435,7 @@ fun findPostByID(id : Int) : CampaignPost? {
     }
 }
 
-fun findMasterIDByCampID(campID: Int) : Int? {
+fun findMasterIDByCampID(campID: Int): Int? {
     try {
         return transaction {
             CampaignUsers
@@ -436,7 +453,7 @@ fun findMasterIDByCampID(campID: Int) : Int? {
     }
 }
 
-fun findCampIDByPostID(id : Int) : Int? {
+fun findCampIDByPostID(id: Int): Int? {
     try {
         return transaction {
             CampaignPosts
@@ -453,7 +470,10 @@ fun findCampIDByPostID(id : Int) : Int? {
     }
 }
 
-fun findCampIDByOwnerAndName(ownerID: Int, name: String) : Int? {
+fun findCampIDByOwnerAndName(
+    ownerID: Int,
+    name: String,
+): Int? {
     try {
         return transaction {
             Campaigns
@@ -471,8 +491,7 @@ fun findCampIDByOwnerAndName(ownerID: Int, name: String) : Int? {
     }
 }
 
-
-fun findCharacterIDByNameUserClassRaceLevel(character: Character) : Int? {
+fun findCharacterIDByNameUserClassRaceLevel(character: Character): Int? {
     try {
         return transaction {
             Characters
@@ -507,7 +526,7 @@ fun findCharactersByUserID(id: Int): List<Character> {
                         it[Characters.name],
                         it[Characters.characterClass],
                         it[Characters.race],
-                        it[Characters.level]
+                        it[Characters.level],
                     )
                 }
         }
@@ -518,7 +537,7 @@ fun findCharactersByUserID(id: Int): List<Character> {
     }
 }
 
-fun findCharacterByID(id: Int) : Character? {
+fun findCharacterByID(id: Int): Character? {
     try {
         return transaction {
             Characters
@@ -544,7 +563,7 @@ fun findCharacterByID(id: Int) : Character? {
     }
 }
 
-fun findUserByID(id: Int) : User? {
+fun findUserByID(id: Int): User? {
     try {
         return transaction {
             Users.selectAll()
@@ -567,12 +586,12 @@ fun findUserByID(id: Int) : User? {
     }
 }
 
-fun findUserByName(name: String) : User? {
+fun findUserByName(name: String): User? {
     try {
         return transaction {
             Users.selectAll()
                 .where {
-                Users.username eq name
+                    Users.username eq name
                 }
                 .firstOrNull()?.let {
                     User(
@@ -590,7 +609,7 @@ fun findUserByName(name: String) : User? {
     }
 }
 
-fun findCampaignByID(id : Int) : Campaign? {
+fun findCampaignByID(id: Int): Campaign? {
     try {
         return transaction {
             Campaigns.selectAll()
@@ -598,12 +617,12 @@ fun findCampaignByID(id : Int) : Campaign? {
                     Campaigns.campaignID eq id
                 }
                 .firstOrNull()?.let {
-                Campaign(
-                    campaignID = it[Campaigns.campaignID],
-                    campaignName = it[Campaigns.campaignName],
-                    ownerID = it[Campaigns.ownerId],
-                )
-            }
+                    Campaign(
+                        campaignID = it[Campaigns.campaignID],
+                        campaignName = it[Campaigns.campaignName],
+                        ownerID = it[Campaigns.ownerId],
+                    )
+                }
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -612,7 +631,7 @@ fun findCampaignByID(id : Int) : Campaign? {
     }
 }
 
-fun fetchAllPostDatesOfOneCampaign(campaignId: Int, user: User) : MutableList<LocalDate> {
+fun fetchAllPostDatesForRedactor(campaignId: Int): MutableList<LocalDate> {
     val uniqueDates = mutableListOf<LocalDate>()
     transaction {
         CampaignPosts
@@ -620,21 +639,50 @@ fun fetchAllPostDatesOfOneCampaign(campaignId: Int, user: User) : MutableList<Lo
             .orderBy(CampaignPosts.gameDate, SortOrder.ASC)
             .where {
                 (CampaignPosts.campaignID eq campaignId)
-                    .and((CampaignPosts.visibility eq Visibility.EVERYBODY)
-                        .or((CampaignPosts.visibility eq Visibility.SINGLE_PLAYER)
-                            .and(CampaignPosts.authorID eq user.userID))
-                        .or((CampaignPosts.visibility eq Visibility.MASTER)
-                            .and(CampaignPosts.authorID eq user.userID)))
-        }.map {
-            it[CampaignPosts.gameDate]
-        }.distinct().forEach {
-            uniqueDates.add(it)
-        }
+            }.map {
+                it[CampaignPosts.gameDate]
+            }.distinct().forEach {
+                uniqueDates.add(it)
+            }
     }
     return uniqueDates
 }
 
-fun fetchAllPostsOfOneCampaignByGameDateAndPlayer(campaignID: Int, date: LocalDate, user: User): List<CampaignPost> {
+fun fetchAllPostDatesOfOneCampaign(
+    campaignId: Int,
+    user: User,
+): MutableList<LocalDate> {
+    val uniqueDates = mutableListOf<LocalDate>()
+    transaction {
+        CampaignPosts
+            .selectAll()
+            .orderBy(CampaignPosts.gameDate, SortOrder.ASC)
+            .where {
+                (CampaignPosts.campaignID eq campaignId)
+                    .and(
+                        (CampaignPosts.visibility eq Visibility.EVERYBODY)
+                            .or(
+                                (CampaignPosts.visibility eq Visibility.SINGLE_PLAYER)
+                                    .and(CampaignPosts.authorID eq user.userID),
+                            )
+                            .or(
+                                (CampaignPosts.visibility eq Visibility.MASTER)
+                                    .and(CampaignPosts.authorID eq user.userID),
+                            ),
+                    )
+            }.map {
+                it[CampaignPosts.gameDate]
+            }.distinct().forEach {
+                uniqueDates.add(it)
+            }
+    }
+    return uniqueDates
+}
+
+fun fetchAllPostsOfOneCampaignForRedactor(
+    campaignID: Int,
+    date: LocalDate,
+): List<CampaignPost> {
     try {
         return transaction {
             CampaignPosts
@@ -643,11 +691,51 @@ fun fetchAllPostsOfOneCampaignByGameDateAndPlayer(campaignID: Int, date: LocalDa
                 .where {
                     (CampaignPosts.campaignID eq campaignID)
                         .and(CampaignPosts.gameDate eq date)
-                        .and((CampaignPosts.visibility eq Visibility.EVERYBODY)
-                            .or((CampaignPosts.visibility eq Visibility.SINGLE_PLAYER)
-                                .and(CampaignPosts.authorID eq user.userID))
-                            .or((CampaignPosts.visibility eq Visibility.MASTER)
-                                .and(CampaignPosts.authorID eq user.userID)))
+                }
+                .map {
+                        row ->
+                    CampaignPost(
+                        row[CampaignPosts.postID],
+                        row[CampaignPosts.campaignID],
+                        row[CampaignPosts.authorID],
+                        row[CampaignPosts.text],
+                        row[CampaignPosts.visibility],
+                        row[CampaignPosts.gameDate],
+                        row[CampaignPosts.postDate],
+                    )
+                }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+fun fetchAllPostsOfOneCampaignByGameDateAndPlayer(
+    campaignID: Int,
+    date: LocalDate,
+    user: User,
+): List<CampaignPost> {
+    try {
+        return transaction {
+            CampaignPosts
+                .selectAll()
+                .orderBy(CampaignPosts.postDate, SortOrder.ASC)
+                .where {
+                    (CampaignPosts.campaignID eq campaignID)
+                        .and(CampaignPosts.gameDate eq date)
+                        .and(
+                            (CampaignPosts.visibility eq Visibility.EVERYBODY)
+                                .or(
+                                    (CampaignPosts.visibility eq Visibility.SINGLE_PLAYER)
+                                        .and(CampaignPosts.authorID eq user.userID),
+                                )
+                                .or(
+                                    (CampaignPosts.visibility eq Visibility.MASTER)
+                                        .and(CampaignPosts.authorID eq user.userID),
+                                ),
+                        )
                 }
                 .map {
                         row ->
@@ -675,7 +763,7 @@ fun fetchAllCharacters(): List<Character> {
             Characters
                 .selectAll()
                 .map {
-                    row ->
+                        row ->
                     Character(
                         row[Characters.characterID],
                         row[Characters.userID],
@@ -702,14 +790,14 @@ fun fetchAllUsers(): List<User> {
                     Users.userRole eq Role.USER
                 }
                 .map {
-                    row ->
+                        row ->
                     User(
                         row[Users.userID],
                         row[Users.username],
                         row[Users.password],
                         row[Users.userRole],
                     )
-            }
+                }
         }
     } catch (e: ClassNotFoundException) {
         throw e
@@ -718,7 +806,7 @@ fun fetchAllUsers(): List<User> {
     }
 }
 
-private fun countAdmins() : Int {
+private fun countAdmins(): Int {
     try {
         return transaction {
             Users
@@ -734,25 +822,25 @@ private fun countAdmins() : Int {
     }
 }
 
-fun fetchAllPlayersByCampaignID(campID: Int) : MutableList<CampaignUser> {
+fun fetchAllPlayersByCampaignID(campID: Int): MutableList<CampaignUser> {
     try {
-     return transaction {
-         CampaignUsers
-             .selectAll()
-             .where {
-                 (CampaignUsers.campaignID eq campID)
-                     .and(CampaignUsers.playerRole eq PlayerRole.PLAYER)
-             }.map {
-                 row ->
-                 CampaignUser(
-                     row[CampaignUsers.id],
-                     row[CampaignUsers.userID],
-                     row[CampaignUsers.campaignID],
-                     row[CampaignUsers.playerRole],
-                     row[CampaignUsers.characterID],
-                 )
-             }.toMutableList()
-     }
+        return transaction {
+            CampaignUsers
+                .selectAll()
+                .where {
+                    (CampaignUsers.campaignID eq campID)
+                        .and(CampaignUsers.playerRole eq PlayerRole.PLAYER)
+                }.map {
+                        row ->
+                    CampaignUser(
+                        row[CampaignUsers.id],
+                        row[CampaignUsers.userID],
+                        row[CampaignUsers.campaignID],
+                        row[CampaignUsers.playerRole],
+                        row[CampaignUsers.characterID],
+                    )
+                }.toMutableList()
+        }
     } catch (e: ClassNotFoundException) {
         throw e
     } catch (e: SQLException) {
@@ -760,7 +848,7 @@ fun fetchAllPlayersByCampaignID(campID: Int) : MutableList<CampaignUser> {
     }
 }
 
-fun fetchAllAdministrators() : MutableList<User> {
+fun fetchAllAdministrators(): MutableList<User> {
     try {
         return transaction {
             Users
@@ -785,7 +873,7 @@ fun fetchAllAdministrators() : MutableList<User> {
     }
 }
 
-fun fetchAllCampaigns() : MutableList<Campaign> {
+fun fetchAllCampaigns(): MutableList<Campaign> {
     try {
         return transaction {
             Campaigns.selectAll().map { row ->
@@ -803,15 +891,16 @@ fun fetchAllCampaigns() : MutableList<Campaign> {
     }
 }
 
-fun fetchAllCampaignsByUserID(userId: Int) : MutableList<Campaign> {
+fun fetchAllCampaignsByUserID(userId: Int): MutableList<Campaign> {
     try {
         val campIds = fetchAllCampaignIDsByUserID(userId)
         val campLst = mutableListOf<Campaign>()
 
-        campIds.forEach{
+        campIds.forEach {
             val camp = findCampaignByID(it)
-            if (camp != null)
+            if (camp != null) {
                 campLst.add(camp)
+            }
         }
 
         return campLst
@@ -822,16 +911,16 @@ fun fetchAllCampaignsByUserID(userId: Int) : MutableList<Campaign> {
     }
 }
 
-private fun fetchAllCampaignIDsByUserID(userId: Int) : MutableList<Int> {
+private fun fetchAllCampaignIDsByUserID(userId: Int): MutableList<Int> {
     try {
         return transaction {
             CampaignUsers
                 .selectAll()
                 .where {
                     (CampaignUsers.userID eq userId)
-            }.map {
-                it[CampaignUsers.campaignID]
-            }.toMutableList()
+                }.map {
+                    it[CampaignUsers.campaignID]
+                }.toMutableList()
         }
     } catch (e: ClassNotFoundException) {
         throw e

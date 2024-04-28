@@ -7,7 +7,7 @@ import ru.uniyar.utils.UserStruct
 
 class CampaignUsersPageVM(
     val campaign: Campaign,
-    val userCharacters : MutableList<UserCharacter>,
-    val void : Boolean,
+    val userCharacters: MutableList<UserCharacter>,
+    val void: Boolean,
     val userStruct: UserStruct?,
 ) : ViewModel

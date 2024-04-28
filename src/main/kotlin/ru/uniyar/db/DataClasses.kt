@@ -44,5 +44,4 @@ data class CampaignPost(
     val postDate: LocalDateTime,
 )
 
-
-data class UserCharacter(val user : User, val player: CampaignUser, val character: Character?)
+data class UserCharacter(val user: User, val player: CampaignUser, val character: Character?)

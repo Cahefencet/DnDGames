@@ -5,7 +5,6 @@ import ru.uniyar.db.Campaign
 import ru.uniyar.db.User
 import ru.uniyar.utils.UserStruct
 
-
 // val selfFlag : Boolean
 
 class KickUserFromCampaignConfirmationPageVM(

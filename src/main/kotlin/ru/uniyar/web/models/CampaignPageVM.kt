@@ -10,7 +10,7 @@ import ru.uniyar.web.pagination.PostPaginationData
 
 class CampaignPageVM(
     val campaign: Campaign,
-    val master : User,
+    val master: User,
     val posts: List<CampaignPost>,
     val userStruct: UserStruct?,
     val paginationData: List<PostPaginationData>,

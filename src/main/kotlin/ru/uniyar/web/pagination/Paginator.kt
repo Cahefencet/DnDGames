@@ -6,9 +6,8 @@ import org.http4k.core.query
 class Paginator(
     private val uri: Uri,
     private val cur: Int,
-    private val total: Int
+    private val total: Int,
 ) {
-
     fun hasPrev(): Boolean {
         return cur in 2..total
     }

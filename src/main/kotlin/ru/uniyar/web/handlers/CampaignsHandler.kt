@@ -11,31 +11,35 @@ import ru.uniyar.web.pagination.*
 
 class CampaignsHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val userStruct = userLens(request)
-            ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct =
+            userLens(request)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns))
+        if (!(userStruct.role.manageAllCampaigns || userStruct.role.manageOwnCampaigns)) {
             return Response(Status.FOUND).header("Location", "/")
+        }
 
-        val campaigns : MutableList<Campaign> =
-            if (userStruct.role.manageAllCampaigns)
+        val campaigns: MutableList<Campaign> =
+            if (userStruct.role.manageAllCampaigns) {
                 fetchAllCampaigns()
-            else
+            } else {
                 fetchAllCampaignsByUserID(userStruct.id)
+            }
 
         val page = request.query("page")?.toIntOrNull() ?: 1
 
         val pageAmount = pageAmount(campaigns, campaignsOnPage)
 
-        if (page !in 1 ..pageAmount)
+        if (page !in 1..pageAmount) {
             return Response(Status.FOUND).header("Location", "/Campaigns")
+        }
 
         val paginator =
             Paginator(
                 Uri.of("/Campaigns"),
                 page,
                 pageAmount,
-                )
+            )
 
         val campaignsFilteredByPageNumber =
             filterByPageNumber(campaigns, campaignsOnPage, paginator.getCur())
@@ -49,11 +53,13 @@ class CampaignsHandler : HttpHandler {
 
 class NewCampaignHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val userStruct = userLens(request)
-            ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct =
+            userLens(request)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageOwnCampaigns))
+        if (!(userStruct.role.manageOwnCampaigns)) {
             return Response(Status.FOUND).header("Location", "/")
+        }
 
         val model = NewCampaignPageVM(userStruct)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -62,44 +68,50 @@ class NewCampaignHandler : HttpHandler {
 
 class CampaignCreationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val userStruct = userLens(request)
-            ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct =
+            userLens(request)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageOwnCampaigns))
+        if (!(userStruct.role.manageOwnCampaigns)) {
             return Response(Status.FOUND).header("Location", "/")
+        }
 
         val name = getValidData(request)
 
-        if (name == "not valid")
+        if (name == "not valid") {
             return Response(Status.FOUND).header("Location", "/NewCampaign")
+        }
 
         val ownerID = findUserByID(userStruct.id)?.userID ?: -1
 
         if (fetchAllCampaigns()
-            .any { (it.campaignName == name) && (it.ownerID == ownerID) })
+                .any { (it.campaignName == name) && (it.ownerID == ownerID) }
+        ) {
             return Response(Status.FOUND).header("Location", "/NewCampaign")
+        }
 
         insertCampaign(
             Campaign(
                 -1,
                 name,
-                ownerID
-            ))
+                ownerID,
+            ),
+        )
 
         val campaignID = findCampIDByOwnerAndName(ownerID, name)
-        return Response(Status.FOUND).header("Location", "/Campaigns/${campaignID}")
+        return Response(Status.FOUND).header("Location", "/Campaigns/$campaignID")
     }
 
-    private fun getValidData(request: Request) : String {
-
+    private fun getValidData(request: Request): String {
         val notValid = "not valid"
 
         val form = request.form()
 
         val name = form.findSingle("name") ?: ""
 
-        if (name == "" || name.equals(null))
+        if (name == "" || name.equals(null)) {
             return notValid
+        }
 
         return name
     }

@@ -22,14 +22,17 @@ import java.time.ZoneOffset
 
 class UserHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val userStruct = userLens(request)
-            ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct =
+            userLens(request)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        val userID = lensOrNull(userIdLens, request)?.toIntOrNull()
-            ?: return Response(Status.FOUND).header("Location","/")
+        val userID =
+            lensOrNull(userIdLens, request)?.toIntOrNull()
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        val user = findUserByID(userID)
-            ?: return Response(Status.FOUND).header("Location","/")
+        val user =
+            findUserByID(userID)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
         val model = UserPageVM(user, userStruct)
 
@@ -47,11 +50,13 @@ class RegistrationHandler : HttpHandler {
 
 class AdminRegistrationHandler : HttpHandler {
     override fun invoke(request: Request): Response {
-        val userStruct = userLens(request)
-            ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct =
+            userLens(request)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageUsers))
+        if (!(userStruct.role.manageUsers)) {
             return Response(Status.FOUND).header("Location", "/")
+        }
 
         val model = RegistrationPageVM(null, null, userStruct, true)
         return Response(Status.OK).with(htmlView(request) of model)
@@ -69,19 +74,22 @@ class AdminCreationHandler : HttpHandler {
 
         val wrongData = User(-1, "wrong data", "1234", Role.ANONYMOUS)
 
-        val userStruct = userLens(request)
-            ?: return Response(Status.FOUND).header("Location", "/")
+        val userStruct =
+            userLens(request)
+                ?: return Response(Status.FOUND).header("Location", "/")
 
-        if (!(userStruct.role.manageUsers))
+        if (!(userStruct.role.manageUsers)) {
             return Response(Status.FOUND).header("Location", "/")
+        }
 
         var model = RegistrationPageVM(wrongData, false, userStruct, true)
 
         if (valid(name, pass, conf, role)) {
-            if (findUserByName(name) != null){
-                model = RegistrationPageVM(wrongData, true, userStruct, true)
-                return Response(Status.OK).with(htmlView(request) of model)
-            }
+            if (findUserByName(name) != null)
+                {
+                    model = RegistrationPageVM(wrongData, true, userStruct, true)
+                    return Response(Status.OK).with(htmlView(request) of model)
+                }
             insertUser(User(-1, name, Hasher.hashPassword(pass), Role.valueOf(role)))
             return Response(Status.FOUND).header("Location", "/Login")
         }
@@ -95,8 +103,9 @@ class AdminCreationHandler : HttpHandler {
         conf: String,
         role: String,
     ): Boolean {
-        if (name.isEmpty() || pass.isEmpty() || conf.isEmpty() || role.isEmpty())
+        if (name.isEmpty() || pass.isEmpty() || conf.isEmpty() || role.isEmpty()) {
             return false
+        }
         try {
             Role.valueOf(role)
         } catch (e: IllegalArgumentException) {
@@ -118,12 +127,12 @@ class UserCreationHandler : HttpHandler {
         val userStruct = userLens(request)
         var model = RegistrationPageVM(wrongData, false, userStruct, false)
 
-
         if (valid(name, pass, conf)) {
-            if (findUserByName(name) != null){
-                model = RegistrationPageVM(wrongData, true, userStruct, false)
-                return Response(Status.OK).with(htmlView(request) of model)
-            }
+            if (findUserByName(name) != null)
+                {
+                    model = RegistrationPageVM(wrongData, true, userStruct, false)
+                    return Response(Status.OK).with(htmlView(request) of model)
+                }
             insertUser(User(-1, name, Hasher.hashPassword(pass), Role.USER))
             return Response(Status.FOUND).header("Location", "/Login")
         }
@@ -157,7 +166,6 @@ class LoginHandler : HttpHandler {
         val name = form.findSingle("name") ?: ""
         val password = form.findSingle("password") ?: ""
 
-
         if (validate(name, password)) {
             if (findUserByName(name) != null) {
                 val user = findUserByName(name)!!
@@ -181,12 +189,12 @@ class LoginHandler : HttpHandler {
         password: String,
     ): Boolean {
         return !(
-                name.isEmpty()
-                || password.isEmpty()
-                || name == ""
-                || password == ""
-                || name.length > 100
-                )
+            name.isEmpty() ||
+                password.isEmpty() ||
+                name == "" ||
+                password == "" ||
+                name.length > 100
+        )
     }
 }
 

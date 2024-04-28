@@ -92,21 +92,22 @@
                                         нет
                                     {% endif %}
                                 </p>
+                                {% if (model.userStruct.id == post.authorID) or (model.userStruct.role.manageAllCampaigns) %}
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-primary btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
+                                        <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
-                {% if (model.userStruct.id == post.authorID) or (model.userStruct.role.manageAllCampaigns) %}
-                    <div class="btn-group" role="group">
-                        <a class="btn btn-primary btn-sm" href="/Posts/{{ post.campaignID }}/edit/{{ post.postID }}">Редактировать</a>
-                        <a class="btn btn-danger btn-sm" href="/Posts/{{ post.postID }}/delete">Удалить</a>
-                    </div>
+                <hr>
                     <p></p>
                     <p></p>
                     <p></p>
                     <p></p>
-                {% endif %}
-            <hr>
+
             {% endfor %}
         </div>
         <p></p>

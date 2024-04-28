@@ -9,4 +9,4 @@ class CampaignsPageVM(
     val campaigns: MutableList<Campaign>,
     val userStruct: UserStruct?,
     val paginationData: PaginationData,
-    ) : ViewModel
+) : ViewModel

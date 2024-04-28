@@ -5,6 +5,6 @@ import ru.uniyar.db.Character
 import ru.uniyar.utils.UserStruct
 
 class DeleteCharacterConfirmationPageVM(
-    val character : Character,
+    val character: Character,
     val userStruct: UserStruct?,
 ) : ViewModel

@@ -7,7 +7,7 @@ import ru.uniyar.web.pagination.PaginationData
 
 class CharactersPageVM(
     val characters: List<Character>,
-    val chooseFlag : Boolean,
+    val chooseFlag: Boolean,
     val userStruct: UserStruct?,
     val paginationData: PaginationData,
 ) : ViewModel
