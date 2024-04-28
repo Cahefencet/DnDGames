@@ -51,5 +51,7 @@ fun router() =
         "/Administrators" bind GET to AdministrationHandler(),
         "/Administrators/new" bind GET to AdminRegistrationHandler(),
         "/Administrators/new" bind POST to AdminCreationHandler(),
+        "/DeleteMePlease" bind GET to SelfDeleteConfirmationHandler(),
+        "/DeleteMePlease" bind POST to SelfDeleteHandler(),
         static(ResourceLoader.Classpath("ru/uniyar/public")),
     )

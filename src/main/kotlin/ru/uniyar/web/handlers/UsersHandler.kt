@@ -2,7 +2,7 @@ package ru.uniyar.web.handlers
 
 import org.http4k.core.*
 import org.http4k.core.body.form
-import ru.uniyar.auth.Role
+import org.http4k.core.cookie.invalidateCookie
 import ru.uniyar.db.deleteUserById
 import ru.uniyar.db.fetchAllAdministrators
 import ru.uniyar.db.fetchAllUsers
@@ -54,7 +54,7 @@ class DeleteUserConfirmationHandler : HttpHandler {
         val user = findUserByID(userID)
             ?: return Response(Status.FOUND).header("Location", "/Users")
 
-        val model = DeleteUserConfirmationPageVM(user, userStruct)
+        val model = DeleteUserConfirmationPageVM(user, userStruct, false)
         return Response(Status.OK).with(htmlView(request) of model)
     }
 }
@@ -80,5 +80,44 @@ class DeleteUserHandler : HttpHandler {
 
         deleteUserById(user.userID)
         return Response(Status.FOUND).header("Location", "/Users")
+    }
+}
+
+class SelfDeleteConfirmationHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        if (!(userStruct.role.manageUsers
+            || userStruct.role.manageAllCampaigns
+            || userStruct.role.manageAllCharacters
+            || userStruct.role.manageOwnCampaigns))
+            return Response(Status.FOUND).header("Location", "/")
+
+        val user = findUserByID(userStruct.id)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        val model = DeleteUserConfirmationPageVM(user, userStruct, true)
+        return Response(Status.OK).with(htmlView(request) of model)
+    }
+}
+
+class SelfDeleteHandler : HttpHandler {
+    override fun invoke(request: Request): Response {
+
+        val userStruct = userLens(request)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        val user = findUserByID(userStruct.id)
+            ?: return Response(Status.FOUND).header("Location", "/")
+
+        val formUserID = request.form().findSingle("userID")?.toIntOrNull() ?: -1
+
+        if (userStruct.id != formUserID)
+            return Response(Status.FOUND).header("Location", "/")
+
+        deleteUserById(user.userID)
+
+        return Response(Status.FOUND).invalidateCookie("auth").header("Location", "/")
     }
 }

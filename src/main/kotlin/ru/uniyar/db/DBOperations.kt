@@ -87,7 +87,7 @@ fun insertCharacter(character: Character) {
                 it[userID] = character.userID
                 it[name] = character.name
                 it[characterClass] = character.characterClass
-                it[race] = character.characterClass
+                it[race] = character.race
                 it[level] = character.level
             }
             exec("SET FOREIGN_KEY_CHECKS=1")
@@ -300,12 +300,59 @@ private fun deleteAllPostsByCampaignID(id: Int) {
 
 fun deleteUserById(id: Int) {
     try {
+        return transaction {
+            exec("SET FOREIGN_KEY_CHECKS=0")
+            deleteFromCampaignPostsByUserID(id)
+            deleteFromCharactersByUserID(id)
+            deleteFromCampaignsByUserID(id)
             deleteFromCampaignUsersByUserID(id)
-            return transaction {
-                Users.deleteWhere {
-                    (Users.userID eq id)
-                }
+            Users.deleteWhere {
+                (Users.userID eq id)
             }
+            exec("SET FOREIGN_KEY_CHECKS=1")
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteFromCampaignsByUserID(id: Int) {
+    try {
+        return transaction {
+            Campaigns.deleteWhere {
+                Campaigns.ownerId eq id
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteFromCharactersByUserID(id: Int) {
+    try {
+        return transaction {
+            Characters.deleteWhere {
+                Characters.userID eq id
+            }
+        }
+    } catch (e: ClassNotFoundException) {
+        throw e
+    } catch (e: SQLException) {
+        throw e
+    }
+}
+
+private fun deleteFromCampaignPostsByUserID(id: Int) {
+    try {
+        return transaction {
+            CampaignPosts.deleteWhere {
+                CampaignPosts.authorID eq id
+            }
+        }
     } catch (e: ClassNotFoundException) {
         throw e
     } catch (e: SQLException) {

@@ -54,15 +54,20 @@
                                         выход
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item bg-danger" href="/DeleteMePlease">
+                                        удалить аккаунт
+                                    </a>
+                                </li>
                             {% else %}
                                 <li>
                                     <a class="dropdown-item" href="/Login">
-                                        ВХОД
+                                        вход
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="/Registration">
-                                        РЕГИСТРАЦИЯ
+                                        регистрация
                                     </a>
                                 </li>
                             {% endif %}

@@ -24,9 +24,9 @@
                 <div class="col-md-6" style="text-align:left;">
                     <label for="date" class="form-label">Выберите дату игры:</label>
                     {% if model.post == null %}
-                        <input type="date" id="date" name="date" class="form-control border border-dark" required>
+                        <input type="date" id="date" name="date" class="form-control border border-dark" maxlength="8" min="1950-01-01" max="3000-01-01" required>
                         {% else %}
-                        <input type="date" id="date" name="date" class="form-control border border-dark" value="{{ model.post.gameDate }}" required>
+                        <input type="date" id="date" name="date" class="form-control border border-dark" maxlength="8" value="{{ model.post.gameDate }}" min="1950-01-01" max="3000-01-01" required>
                     {% endif %}
                 </div>
                 <div class="col-md-6" style="text-align:right;">
@@ -35,9 +35,9 @@
 
                         <option value="EVERYBODY" selected>Мастер и игроки</option>
                         {% if model.userStruct.id == model.ownerID %}
-                            <option value="MASTER">Только мастер</option>
+                            <option value="MASTER">Только я</option>
                         {% else %}
-                            <option value="SINGLE_PLAYER">Только игрок</option>
+                            <option value="SINGLE_PLAYER">Только я</option>
                         {% endif %}
                     </select>
                 </div>
@@ -45,7 +45,7 @@
         </div>
 
         <div class="container">
-            <br>
+            <p></p>
             <p style="text-align:left;">Что было:</p>
             {% if model.post == null %}
                 <textarea class="form-control border border-dark" name="text" id="text" rows="20"
@@ -56,7 +56,7 @@
             {% endif %}
 
         </div>
-        <br>
+        <p></p>
 
         <button type="submit" class="btn btn-primary">Принять</button>
     </form>

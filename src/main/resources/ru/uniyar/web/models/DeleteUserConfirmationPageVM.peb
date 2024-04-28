@@ -5,16 +5,25 @@
         {% endblock %}
 
     {% block body %}
-    {% if model.userStruct.role.manageUsers %}
-    <div class="container">
+    {% if model.userStruct.role.manageUsers or model.self %}
+    <div class="container container-sm text-center mt-5" style="width: 80%">
         <div class="container">
             <h5>
-                <p>Ник: {{ model.user.userName }}</p>
-                <p>ID: {{ model.user.userID }}</p>
-                <p>Роль: {{ model.user.role }}  </p>
+                {% if not model.self %}
+                    <p>Ник: {{ model.user.userName }}</p>
+                    <p>ID: {{ model.user.userID }}</p>
+                    <p>Роль: {{ model.user.role }}  </p>
+                {% endif %}
+
                 <form method="post">
                     <label class="form-label">
-                        Вы уверены, что хотите удалить этого пользователя?<br>
+                        {% if model.self %}
+                            <p>Вы уверены, что хотите удалить свой аккаунт?</p>
+                            <p>Восстановить данные не удастся!</p>
+                            <p>Ваши кампании, персонажи и посты тоже будут удалены.</p>
+                        {% else %}
+                            <p>Вы уверены, что хотите удалить этого пользователя?</p>
+                        {% endif %}
                     </label>
                     <input type="hidden" name="userID" value="{{ model.user.userID }}">
                     <p>

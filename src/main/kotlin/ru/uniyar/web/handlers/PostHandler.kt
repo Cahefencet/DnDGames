@@ -53,7 +53,7 @@ class PostCreationHandler : HttpHandler {
 
         val valid = getValidData(request)
         if (valid.size < 3)
-            return Response(Status.FOUND).header("Location","/Campaigns")
+            return Response(Status.FOUND).header("Location","/Campaigns/${campaignID}")
 
         val text = valid[2]
         val visibility = Visibility.valueOf(valid[1])
@@ -86,12 +86,18 @@ class PostCreationHandler : HttpHandler {
 
         val valid = mutableListOf<Any>(formDate, formVisibility, formText)
 
-        if (valid.any { it == "" || it.equals(null)} || formText.length > 3500)
+        if (valid.any {
+            it == "" || it.equals(null)} || formText.length > 3500)
+            return notValid
+
+        if (formDate.length != 10)
             return notValid
 
         try {
             val visibility = Visibility.valueOf(formVisibility)
             val date = LocalDate.parse(formDate)
+            if (date < LocalDate.parse("1950-01-01") || date > LocalDate.parse("3000-01-01"))
+                return notValid
             return mutableListOf(date.toString(), visibility.toString(), formText)
         } catch (e: IllegalArgumentException) {
             return notValid

@@ -61,9 +61,16 @@ class CampaignHandler : HttpHandler {
             else
                 fetchAllPostsOfOneCampaignByGameDateAndPlayer(campaignID, dates[page-1], user).toMutableList()
 
-        val model = CampaignPageVM(campaign, master, posts, userStruct, paginationData, paginationFlag)
+        val curDateNadNumber = getDateAndNumber(page, dates)
+
+        val model = CampaignPageVM(campaign, master, posts, userStruct, paginationData, paginationFlag, curDateNadNumber)
 
         return Response(Status.OK).with(htmlView(request) of model)
+    }
+
+    private fun getDateAndNumber(page: Int, dates: MutableList<LocalDate>) : CurDateAndNumber {
+        val date = dates[page-1]
+        return CurDateAndNumber(date, page)
     }
 
     private fun getPaginationData(dates : MutableList<LocalDate>, campaignID: Int) : MutableList<PostPaginationData> {
@@ -77,6 +84,8 @@ class CampaignHandler : HttpHandler {
         return data
     }
 }
+
+class CurDateAndNumber(val date: LocalDate, val num : Int)
 
 class CampaignUsersHandler : HttpHandler {
     override fun invoke(request: Request): Response {

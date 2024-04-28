@@ -48,7 +48,7 @@
                                 <form method="post">
                                     <input type="hidden" name="charID" value="{{ character.characterID }}">
                                     <p>
-                                        <button class="btn btn-danger" type="submit">Выбрать</button>
+                                        <button class="btn btn-success" type="submit">Выбрать</button>
                                     </p>
                                 </form>
                                 {% endif %}
@@ -64,8 +64,6 @@
         </div>
         {% endif %}
 
-        {% include "./Pagination.peb" %}
-
         {% if not model.chooseFlag and model.userStruct.role.manageOwnCharacters %}
         <div class="container text-center">
             <a class="btn btn-dark" href="/Characters-new">
@@ -73,4 +71,7 @@
             </a>
         </div>
         {% endif %}
+
+        {% include "./Pagination.peb" %}
+
     {% endblock %}

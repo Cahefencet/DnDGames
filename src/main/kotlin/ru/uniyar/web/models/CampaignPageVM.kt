@@ -5,6 +5,7 @@ import ru.uniyar.db.Campaign
 import ru.uniyar.db.CampaignPost
 import ru.uniyar.db.User
 import ru.uniyar.utils.UserStruct
+import ru.uniyar.web.handlers.CurDateAndNumber
 import ru.uniyar.web.pagination.PostPaginationData
 
 class CampaignPageVM(
@@ -14,4 +15,5 @@ class CampaignPageVM(
     val userStruct: UserStruct?,
     val paginationData: List<PostPaginationData>,
     val paginationFlag: Boolean,
+    val curDateAndNumber: CurDateAndNumber,
 ) : ViewModel

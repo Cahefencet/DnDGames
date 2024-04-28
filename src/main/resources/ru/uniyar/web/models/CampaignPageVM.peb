@@ -21,19 +21,22 @@
                         {% if model.paginationFlag %}
                         <div class="dropdown text-end">
                             <a class="btn btn-dark dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                Список партий
+                                Партия {{ model.curDateAndNumber.num }}. ({{ model.curDateAndNumber.date | date("dd.MM.yyyy") }})
                             </a>
 
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                     {% for page in model.paginationData %}
-                                    <li><a class="dropdown-item" href="{{ page.uri }}">Партия {{ loop.index + 1 }}. ({{ page.date | date("dd.MM.yyyy") }})</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ page.uri }}">
+                                            Партия {{ loop.index + 1 }}. ({{ page.date | date("dd.MM.yyyy") }})
+                                        </a>
+                                    </li>
                                     {% endfor %}
                             </ul>
                         </div>
                         {% endif %}
                 </div>
             </div>
-
             <p></p>
             <p></p>
             <div>
@@ -58,31 +61,36 @@
 
             <p></p>
             <p></p>
+            <hr>
             {% for post in model.posts %}
                 <div class="row">
                     <div class="card row-hover pos-relative py-3 px-3 mb-3 border-dark border-top-0 border-right-0 border-bottom-0 rounded-0">
                         <div class="row align-items-center">
                             <div class="col-md-8 mb-3 mb-sm-0">
-                                <p class="text-sm">
+
+                                <p style="margin-top:0em; margin-bottom:0em; width: 150%">{{ post.text }}</p>
+                                <hr style="width: 152%">
+
+                                <p class="text-sm" style="margin-top:0em; margin-bottom:0em;">
                                     Номер поста в данной партии: {{ loop.index + 1 }}
                                 </p>
 
-                                <p class="text-sm">
+                                <p class="text-sm" style="margin-top:0em; margin-bottom:0em;">
                                     Дата публикации: {{ post.postDate | date("dd.MM.yyyy HH:mm:ss") }}
                                 </p>
 
-                                <p>{{ post.text }}</p>
-
-                                <p  class="text-sm">
-                                    <strong>
-                                        Дата игры: {{ post.gameDate | date("dd.MM.yyyy") }}
-                                    </strong>
-                                </p>
-
-                                <p class="text-sm">
+                                <p class="text-sm" style="margin-top:0em; margin-bottom:0em;">
                                     <a href="/Users/{{ post.authorID }}">
                                         Автор
                                     </a>
+                                </p>
+
+                                <p style="margin-top:0em; margin-bottom:0em;">Скрыт от чужого взора:
+                                    {% if post.visibility == "MASTER" or post.visibility == "SINGLE_PLAYER" %}
+                                        да
+                                    {% else %}
+                                        нет
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
@@ -98,7 +106,7 @@
                     <p></p>
                     <p></p>
                 {% endif %}
-
+            <hr>
             {% endfor %}
         </div>
         <p></p>
