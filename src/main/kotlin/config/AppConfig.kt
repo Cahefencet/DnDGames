@@ -19,8 +19,6 @@ class AppConfig(val webPort: Int) {
                     .fromResource(
                         "ru/uniyar/config/app.properties",
                     )
-                    .overrides(Environment.JVM_PROPERTIES)
-                    .overrides(Environment.ENV)
                     .overrides(defaultWebConfig)
 
             return AppConfig(webPortLens(envConfig))
@@ -31,8 +29,6 @@ class AppConfig(val webPort: Int) {
                 .fromResource(
                     "ru/uniyar/config/app.properties",
                 )
-                .overrides(Environment.JVM_PROPERTIES)
-                .overrides(Environment.ENV)
                 .overrides(defaultWebConfig)
         }
     }
