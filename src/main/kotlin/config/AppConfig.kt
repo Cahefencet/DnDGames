@@ -1,12 +1,16 @@
 package config
 
 import org.http4k.cloudnative.env.Environment
+import org.http4k.cloudnative.env.EnvironmentKey
+import org.http4k.lens.int
 
-class AppConfig(val webConfig: WebConfig) {
+class AppConfig(val webPort: Int) {
     companion object {
+        private val webPortLens = EnvironmentKey.int().required("web.post")
+
         private val defaultWebConfig =
             Environment.defaults(
-                WebConfig.webPortLens of 9000,
+                webPortLens of 9000,
             )
 
         fun readConfiguration(): AppConfig {
@@ -19,7 +23,7 @@ class AppConfig(val webConfig: WebConfig) {
                     .overrides(Environment.ENV)
                     .overrides(defaultWebConfig)
 
-            return AppConfig(WebConfig.createWebConfig(envConfig))
+            return AppConfig(webPortLens(envConfig))
         }
 
         fun getEnvConfig(): Environment {

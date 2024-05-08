@@ -28,7 +28,7 @@ class CharactersHandler : HttpHandler {
 
         val page = request.query("page")?.toIntOrNull() ?: 1
 
-        val pageAmount = pageAmount(characters, charactersOnPage)
+        val pageAmount = pageAmount(characters, CHARACTERS_ON_PAGE)
 
         if (page !in 1..pageAmount) {
             return Response(Status.FOUND).header("Location", "/Characters")
@@ -42,7 +42,7 @@ class CharactersHandler : HttpHandler {
             )
 
         val charactersFilteredByPageNumber =
-            filterByPageNumber(characters, charactersOnPage, paginator.getCur())
+            filterByPageNumber(characters, CHARACTERS_ON_PAGE, paginator.getCur())
 
         val paginationData = getPaginationData(paginator)
 
@@ -165,7 +165,7 @@ class ShowCharactersToChooseHandler : HttpHandler {
 
         val page = request.query("page")?.toIntOrNull() ?: 1
 
-        val pageAmount = pageAmount(characters, charactersOnPage)
+        val pageAmount = pageAmount(characters, CHARACTERS_ON_PAGE)
 
         if (page !in 1..pageAmount) {
             return Response(Status.FOUND).header("Location", "/Choose/$campID/$userID")
@@ -179,7 +179,7 @@ class ShowCharactersToChooseHandler : HttpHandler {
             )
 
         val charactersFilteredByPageNumber =
-            filterByPageNumber(characters, charactersOnPage, paginator.getCur())
+            filterByPageNumber(characters, CHARACTERS_ON_PAGE, paginator.getCur())
 
         val paginationData = getPaginationData(paginator)
 

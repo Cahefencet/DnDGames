@@ -28,7 +28,7 @@ class CampaignsHandler : HttpHandler {
 
         val page = request.query("page")?.toIntOrNull() ?: 1
 
-        val pageAmount = pageAmount(campaigns, campaignsOnPage)
+        val pageAmount = pageAmount(campaigns, CAMPAIGNS_ON_PAGE)
 
         if (page !in 1..pageAmount) {
             return Response(Status.FOUND).header("Location", "/Campaigns")
@@ -42,7 +42,7 @@ class CampaignsHandler : HttpHandler {
             )
 
         val campaignsFilteredByPageNumber =
-            filterByPageNumber(campaigns, campaignsOnPage, paginator.getCur())
+            filterByPageNumber(campaigns, CAMPAIGNS_ON_PAGE, paginator.getCur())
 
         val paginationData = getPaginationData(paginator)
 

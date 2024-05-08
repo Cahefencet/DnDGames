@@ -85,11 +85,10 @@ class AdminCreationHandler : HttpHandler {
         var model = RegistrationPageVM(wrongData, false, userStruct, true)
 
         if (valid(name, pass, conf, role)) {
-            if (findUserByName(name) != null)
-                {
-                    model = RegistrationPageVM(wrongData, true, userStruct, true)
-                    return Response(Status.OK).with(htmlView(request) of model)
-                }
+            if (findUserByName(name) != null) {
+                model = RegistrationPageVM(wrongData, true, userStruct, true)
+                return Response(Status.OK).with(htmlView(request) of model)
+            }
             insertUser(User(-1, name, Hasher.hashPassword(pass), Role.valueOf(role)))
             return Response(Status.FOUND).header("Location", "/Login")
         }
@@ -128,11 +127,10 @@ class UserCreationHandler : HttpHandler {
         var model = RegistrationPageVM(wrongData, false, userStruct, false)
 
         if (valid(name, pass, conf)) {
-            if (findUserByName(name) != null)
-                {
-                    model = RegistrationPageVM(wrongData, true, userStruct, false)
-                    return Response(Status.OK).with(htmlView(request) of model)
-                }
+            if (findUserByName(name) != null) {
+                model = RegistrationPageVM(wrongData, true, userStruct, false)
+                return Response(Status.OK).with(htmlView(request) of model)
+            }
             insertUser(User(-1, name, Hasher.hashPassword(pass), Role.USER))
             return Response(Status.FOUND).header("Location", "/Login")
         }

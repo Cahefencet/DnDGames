@@ -7,7 +7,7 @@ import ru.uniyar.auth.Role
 import java.sql.SQLException
 import java.time.LocalDate
 
-fun editCharacter(newCharacter: Character)  {
+fun editCharacter(newCharacter: Character) {
     try {
         return transaction {
             Characters.update({
@@ -104,7 +104,7 @@ fun insertCharacter(character: Character) {
     }
 }
 
-fun insertPost(campaignPost: CampaignPost)  {
+fun insertPost(campaignPost: CampaignPost) {
     try {
         return transaction {
             exec("SET FOREIGN_KEY_CHECKS=0")
@@ -128,7 +128,7 @@ fun insertPost(campaignPost: CampaignPost)  {
 fun insertPlayer(
     userId: Int,
     campaignId: Int,
-)  {
+) {
     try {
         return transaction {
             if (!isUserInCampaign(userId, campaignId)) {

@@ -71,5 +71,5 @@ data class PostPaginationData(
     val uri: Uri,
 )
 
-const val campaignsOnPage = 6
-const val charactersOnPage = 12
+const val CAMPAIGNS_ON_PAGE = 6
+const val CHARACTERS_ON_PAGE = 12

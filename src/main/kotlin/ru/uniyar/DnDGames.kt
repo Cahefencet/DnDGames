@@ -14,7 +14,6 @@ fun main() {
             .asServer(
                 Netty(
                     readConfiguration()
-                        .webConfig
                         .webPort,
                 ),
             ).start()
