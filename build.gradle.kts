@@ -82,6 +82,7 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:2.7.1")
     implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("io.kotest.extensions:kotest-extensions-testcontainers:${kotestVersion}")
     testImplementation("org.http4k:http4k-testing-approval:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-hamkrest:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-kotest:$http4kVersion")
