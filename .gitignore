@@ -1,4 +1,5 @@
 .gradle/
 .idea/
 build/
-README.md
+app.properties
+DBAuth.env

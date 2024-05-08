@@ -6,7 +6,7 @@ import org.http4k.lens.int
 
 class AppConfig(val webPort: Int) {
     companion object {
-        private val webPortLens = EnvironmentKey.int().required("web.post")
+        private val webPortLens = EnvironmentKey.int().required("web.port")
 
         private val defaultWebConfig =
             Environment.defaults(
