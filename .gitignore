@@ -1,5 +1,5 @@
 .gradle/
 .idea/
 build/
-app.properties
+resources/ru/uniyar/config/Secret.env
 resources/ru/uniyar/config/DBAuth.env
