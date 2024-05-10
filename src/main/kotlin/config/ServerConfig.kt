@@ -10,7 +10,7 @@ class ServerConfig(
     val dbPass: String,
     val salt: String,
     val secret: String,
-    ) {
+) {
     companion object {
         private val dotenvPrivate =
             dotenv {

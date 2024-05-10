@@ -3,7 +3,6 @@ package ru.uniyar
 import config.ServerConfig.Companion.readConfiguration
 import org.http4k.server.Netty
 import org.http4k.server.asServer
-import ru.uniyar.auth.Hasher
 import ru.uniyar.utils.DBConnection
 import ru.uniyar.utils.getApp
 
@@ -16,8 +15,8 @@ fun main() {
         getApp()
             .asServer(
                 Netty(
-                    configuration.
-                    webPort,
+                    configuration
+                        .webPort,
                 ),
             ).start()
 
