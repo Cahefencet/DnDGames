@@ -28,14 +28,13 @@ class DBTests : FunSpec({
 
         val newUser = findUserByName("Test")
 
-        if (newUser != null)
-            {
-                newUser.userName.shouldBe("Test")
-                newUser.password.shouldBe("Test")
-                newUser.role.shouldBe(Role.USER)
+        if (newUser != null) {
+            newUser.userName.shouldBe("Test")
+            newUser.password.shouldBe("Test")
+            newUser.role.shouldBe(Role.USER)
 
-                deleteUserById(newUser.userID)
-            }
+            deleteUserById(newUser.userID)
+        }
     }
 
     test("fetch user by valid name test") {
