@@ -6,6 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
     id("com.google.devtools.ksp") version "1.9.10-1.0.13"
     kotlin("jvm") version "1.9.10"
+    id("nu.studer.jooq") version "9.0"
 }
 
 val http4kVersion: String by project
@@ -19,6 +20,7 @@ val exposedVersion: String by project
 val ktlintVersion: String by project
 val dotenvVersion: String by project
 val mysqlConnVersion: String by project
+val mariaClient: String by project
 
 ktlint {
     version = ktlintVersion
@@ -31,6 +33,12 @@ buildscript {
     }
 
     dependencies {
+    }
+
+    configurations["classpath"].resolutionStrategy.eachDependency {
+        if (requested.group.startsWith("org.jooq") && requested.name.startsWith("jooq")) {
+            useVersion("3.17.3")
+        }
     }
 }
 
@@ -63,7 +71,14 @@ tasks {
     }
 }
 
+jooq {
+    version.set("3.19.1")
+    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
+}
+
 dependencies {
+    jooqGenerator("com.mysql:mysql-connector-j:$mysqlConnVersion")
+    jooqGenerator("org.mariadb.jdbc:mariadb-java-client:$mariaClient")
     implementation("org.http4k:http4k-client-okhttp:$http4kVersion")
     implementation("org.http4k:http4k-core:$http4kVersion")
     implementation("org.http4k:http4k-format-jackson:$http4kVersion")
@@ -79,9 +94,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
-    implementation("com.mysql:mysql-connector-j:8.3.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.1")
-    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("com.mysql:mysql-connector-j:$mysqlConnVersion")
+    implementation("org.mariadb.jdbc:mariadb-java-client:$mariaClient")
     testImplementation("org.http4k:http4k-testing-approval:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-hamkrest:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-kotest:$http4kVersion")
