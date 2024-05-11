@@ -1,14 +1,11 @@
 import org.gradle.api.JavaVersion.VERSION_17
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jooq.meta.jaxb.ForcedType
-import org.jooq.meta.jaxb.Logging
 
 plugins {
     application
     kotlin("jvm") version "1.9.10"
     id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
     id("com.google.devtools.ksp") version "1.9.10-1.0.13"
-    id("nu.studer.jooq") version "9.0"
 }
 
 val http4kVersion: String by project
@@ -67,67 +64,7 @@ tasks {
     }
 }
 
-jooq {
-    version.set("3.19.1")
-    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
-
-    configurations {
-        create("main") {
-            generateSchemaSourceOnCompilation.set(true)
-
-            jooqConfiguration.apply {
-                logging = Logging.INFO
-                jdbc.apply {
-                    driver = "com.mysql.cj.jdbc.Driver"
-                    url = "jdbc:mysql://10.88.0.2:3306/dndgames"
-                    user = "root"
-                    password = "Askal38880!"
-                }
-
-                generator.apply {
-                    name = "org.jooq.codegen.DefaultGenerator"
-                    database.apply {
-                        name = "org.jooq.meta.mariadb.MariaDBDatabase"
-                        inputSchema = "public"
-
-                        forcedTypes.addAll(
-                            listOf(
-                                ForcedType().apply {
-                                    name = "varchar"
-                                    includeExpression = ".*"
-                                    includeTypes = "JSON"
-                                },
-                                ForcedType().apply {
-                                    name = "varchar"
-                                    includeExpression = ".*"
-                                    includeTypes = "INET"
-                                },
-                            ),
-                        )
-                    }
-
-                    generate.apply {
-                        isDeprecated = false
-                        isRecords = true
-                        isImmutablePojos = true
-                        isFluentSetters = true
-                    }
-
-                    target.apply {
-                        packageName = "nu.studer.sample"
-                        directory = "build/generated-src/jooq/main"
-                    }
-
-                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
-                }
-            }
-        }
-    }
-}
-
 dependencies {
-    jooqGenerator("com.mysql:mysql-connector-j:$mysqlConnVersion")
-    jooqGenerator("org.mariadb.jdbc:mariadb-java-client:$mariaClient")
     implementation("org.http4k:http4k-client-okhttp:$http4kVersion")
     implementation("org.http4k:http4k-core:$http4kVersion")
     implementation("org.http4k:http4k-format-jackson:$http4kVersion")
