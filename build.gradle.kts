@@ -29,6 +29,9 @@ buildscript {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://repo.flywaydb.org/")
+        }
     }
 
     dependencies {
@@ -82,6 +85,7 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
     implementation("com.mysql:mysql-connector-j:$mysqlConnVersion")
     implementation("org.mariadb.jdbc:mariadb-java-client:$mariaClient")
+    implementation("org.flywaydb:flyway-mysql:10.12.0")
     testImplementation("org.http4k:http4k-testing-approval:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-hamkrest:$http4kVersion")
     testImplementation("org.http4k:http4k-testing-kotest:$http4kVersion")
