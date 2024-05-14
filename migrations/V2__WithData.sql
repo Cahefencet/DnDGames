@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
 --
--- Host: 10.88.0.2    Database: dndgames
+-- Host: 10.88.0.5    Database: dndgames
 -- ------------------------------------------------------
 -- Server version	5.5.5-10.11.7-MariaDB-1:10.11.7+maria~ubu2204
 
@@ -160,8 +160,41 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (3,'CahefencetAdmin','55338fe8bb3ccdfb50f21dbf514ef1457143f95a5819571a6b5d0085190bed20','ADMIN'),(5,'exampleUser','b66fd264e84e80faf392a47722c6e4798963033173ce2a0bdf1144e1e6618bda','USER'),(8,'KOBOLD_THE_DESTROYER','b66fd264e84e80faf392a47722c6e4798963033173ce2a0bdf1144e1e6618bda','USER'),(9,'CahefencetRedactor','55338fe8bb3ccdfb50f21dbf514ef1457143f95a5819571a6b5d0085190bed20','REDACTOR'),(10,'CahefencetModerator','55338fe8bb3ccdfb50f21dbf514ef1457143f95a5819571a6b5d0085190bed20','MODERATOR'),(14,'example2','b66fd264e84e80faf392a47722c6e4798963033173ce2a0bdf1144e1e6618bda','USER');
+INSERT INTO `Users` VALUES (3,'Admin','c8b3533a71d70c2973dc313c15131dd440733e31f02cedd1d1a05faecf40c6c9','ADMIN'),(5,'GOBLIN_THE_SLAYER','c8b3533a71d70c2973dc313c15131dd440733e31f02cedd1d1a05faecf40c6c9','USER'),(8,'KOBOLD_THE_DESTROYER','c8b3533a71d70c2973dc313c15131dd440733e31f02cedd1d1a05faecf40c6c9','USER'),(9,'Redactor','c8b3533a71d70c2973dc313c15131dd440733e31f02cedd1d1a05faecf40c6c9','REDACTOR'),(10,'Moderator','c8b3533a71d70c2973dc313c15131dd440733e31f02cedd1d1a05faecf40c6c9','MODERATOR'),(14,'exampleUser2','c8b3533a71d70c2973dc313c15131dd440733e31f02cedd1d1a05faecf40c6c9','USER');
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `flyway_schema_history`
+--
+
+DROP TABLE IF EXISTS `flyway_schema_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `flyway_schema_history` (
+  `installed_rank` int(11) NOT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `description` varchar(200) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `script` varchar(1000) NOT NULL,
+  `checksum` int(11) DEFAULT NULL,
+  `installed_by` varchar(100) NOT NULL,
+  `installed_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `execution_time` int(11) NOT NULL,
+  `success` tinyint(1) NOT NULL,
+  PRIMARY KEY (`installed_rank`),
+  KEY `flyway_schema_history_s_idx` (`success`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `flyway_schema_history`
+--
+
+LOCK TABLES `flyway_schema_history` WRITE;
+/*!40000 ALTER TABLE `flyway_schema_history` DISABLE KEYS */;
+INSERT INTO `flyway_schema_history` VALUES (1,'1','Base','SQL','V1__Base.sql',-1527967175,'root','2024-05-14 12:28:16',231,1),(2,'2','WithData','SQL','V2__WithData.sql',1844648836,'root','2024-05-14 12:44:29',613,1);
+/*!40000 ALTER TABLE `flyway_schema_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -177,4 +210,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-11 18:37:22
+-- Dump completed on 2024-05-14 15:47:55
