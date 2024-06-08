@@ -9,6 +9,7 @@ class ServerConfig(
     val dbUser: String,
     val dbPass: String,
     val salt: String,
+    val dbName: String,
     val secret: String,
 ) {
     companion object {
@@ -45,6 +46,8 @@ class ServerConfig(
                 dotenvPrivate.get("DB_USER") ?: "user"
             val password =
                 dotenvPrivate.get("PASSWORD")
+            val dbName =
+                dotenvPrivate.get("DB_NAME")
             val host =
                 dotenvPublic.get("HOST")
             val salt =
@@ -59,6 +62,7 @@ class ServerConfig(
                 dbUser,
                 password,
                 salt,
+                dbName,
                 secret,
             )
         }
